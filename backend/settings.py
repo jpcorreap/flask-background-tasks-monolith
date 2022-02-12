@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SQLALCHEMY_DATABASE_URI = f"postgresql://{os.getenv('PG_USER')}:{os.getenv('PG_PASSWORD')}@0.0.0.0:5432/{os.getenv('DB_NAME')}"
+PG_USER = os.getenv("PG_USER")
+PG_PASSWORD = os.getenv("PG_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+SQLALCHEMY_DB_URI = f"postgresql://{PG_USER}:{PG_PASSWORD}@0.0.0.0:5432/{DB_NAME}"
 JWT_SECRET_KEY = os.getenv("SECRET")
 PROPAGATE_EXCEPTIONS = True
