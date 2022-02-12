@@ -8,7 +8,7 @@ from schemas.schema import ma
 from views.event import ResourceEvent, ResourceEventDetail
 from views.user import SignIn, SignUp
 
-#app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
+# app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
 app = Flask(__name__)
 app.config.from_object("settings")
 
@@ -25,6 +25,7 @@ api.add_resource(ResourceEvent, "/api/events")
 api.add_resource(ResourceEventDetail, "/api/events/<int:id_event>")
 api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
+
 
 @app.route("/")
 def serve():

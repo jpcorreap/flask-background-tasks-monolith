@@ -7,6 +7,7 @@ class SubmissionStatus(str, Enum):
     processing = "processing"
     converted = "converted"
 
+
 class Submission(db.Model):
     __tablename__ = "submission"
     id = db.Column(db.Integer, primary_key=True)

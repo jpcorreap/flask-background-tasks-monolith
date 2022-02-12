@@ -14,7 +14,7 @@ class ContestSchema(ma.Schema):
             "prize",
             "script",
             "advices",
-            "admin"
+            "admin",
         )
 
 
