@@ -28,7 +28,4 @@ repos:
     hooks:
       - id: isort
         language_version: python3.8
-  - repo: https://github.com/jendrikseipp/vulture
-    rev: "v2.3"
-    hooks:
-      - id: vulture
+
