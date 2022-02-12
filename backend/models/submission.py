@@ -15,3 +15,4 @@ class Submission(db.Model):
     observations = db.Column(db.String(512), nullable=False)
     status = db.Column(db.Enum(SubmissionStatus), nullable=False)
     contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"), nullable=False)
+    upload_date = db.Column(db.DateTime, nullable=False)

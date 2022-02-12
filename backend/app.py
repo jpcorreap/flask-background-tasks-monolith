@@ -7,6 +7,7 @@ from models.model import db
 from schemas.schema import ma
 
 from backend.views.contest import ResourceContest, ResourceContestDetail
+from backend.views.submission import ResourceSubmission, ResourceSubmissionDetail
 from backend.views.user import SignIn, SignUp
 
 # app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
@@ -26,6 +27,10 @@ api.add_resource(ResourceContest, "/api/contests")
 api.add_resource(ResourceContestDetail, "/api/contests/<int:id_contest>")
 api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
+api.add_resource(ResourceSubmission, "/api/contests/<str:contest_url>/")
+api.add_resource(
+    ResourceSubmissionDetail, "/api/contests/<str:contest_url>/<int:id_submission>"
+)
 
 
 @app.route("/")
