@@ -16,3 +16,4 @@ class Contest(db.Model):
     script = db.Column(db.String(256), nullable=False)
     advices = db.Column(db.String(256), nullable=False)
     admin = db.Column(db.Integer, db.ForeignKey("admin.id"), nullable=False)
+    db.CheckConstraint("end_date > start_date", name="date_constraint")
