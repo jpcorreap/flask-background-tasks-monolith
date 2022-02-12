@@ -3,7 +3,7 @@ from app import db
 
 class Contest(db.Model):
     __tablename__ = "contest"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     url = db.Column(db.String(128), unique=True, nullable=False)
     name = db.Column(db.String(128), unique=True, nullable=False)
     banner = db.Column(db.String(128), unique=True, nullable=False)
