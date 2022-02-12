@@ -12,17 +12,18 @@ from backend.models.admin import Admin
 
 class SignIn(Resource):
     def post(self):
+        ans = "Wrong email or password", 401
         user = User.query.filter_by(email=request.json["email"]).first()
-        admin = Admin.query.filter_by(id=user.id).first()
-        if check_password_hash(
-            admin.password, request.json["password"].encode("utf-8")
-        ):
-            access_token = create_access_token(
-                identity=str(user.id), expires_delta=timedelta(hours=2)
-            )
-            return {"access_token": access_token}, 200
-        else:
-            return "Wrong email or password", 401
+        if user:
+            admin = Admin.query.filter_by(id=user.id).first()
+            if check_password_hash(
+                admin.password, request.json["password"].encode("utf-8")
+            ):
+                access_token = create_access_token(
+                    identity=str(user.id), expires_delta=timedelta(hours=2)
+                )
+                ans = {"access_token": access_token}, 200
+        return ans
 
 
 class SignUp(Resource):
