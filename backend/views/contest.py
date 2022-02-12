@@ -39,11 +39,8 @@ class ResourceContest(Resource):
 
 
 class ResourceContestDetail(Resource):
-    @jwt_required()
-    def get(self, id_contest):
-        contest = Contest.query.filter_by(
-            id=id_contest, admin=get_jwt_identity()
-        ).first_or_404()
+    def get(self, contest_url):
+        contest = Contest.query.filter_by(url=contest_url).first_or_404()
         return contest_schema.dump(contest)
 
     @jwt_required()

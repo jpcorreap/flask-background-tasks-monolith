@@ -25,11 +25,12 @@ CORS(app)
 
 api.add_resource(ResourceContest, "/api/contests")
 api.add_resource(ResourceContestDetail, "/api/contests/<int:id_contest>")
+api.add_resource(ResourceContestDetail, "/api/contests/<string:contest_url>")
 api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
-api.add_resource(ResourceSubmission, "/api/contests/<str:contest_url>/")
+api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>/")
 api.add_resource(
-    ResourceSubmissionDetail, "/api/contests/<str:contest_url>/<int:id_submission>"
+    ResourceSubmissionDetail, "/api/contests/<string:contest_url>/<int:id_submission>"
 )
 
 
