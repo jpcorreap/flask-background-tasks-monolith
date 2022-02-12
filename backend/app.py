@@ -6,6 +6,7 @@ from flask_restful import Api
 from models.model import db
 from schemas.schema import ma
 
+from backend.views.contest import ResourceContest, ResourceContestDetail
 from backend.views.user import SignIn, SignUp
 
 # app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
@@ -21,8 +22,8 @@ bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 CORS(app)
 
-# api.add_resource(ResourceEvent, "/api/events")
-# api.add_resource(ResourceEventDetail, "/api/events/<int:id_event>")
+api.add_resource(ResourceContest, "/api/contests")
+api.add_resource(ResourceContestDetail, "/api/contests/<int:id_contest>")
 api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
 
