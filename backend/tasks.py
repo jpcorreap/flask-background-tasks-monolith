@@ -1,12 +1,12 @@
-from email.email_sender import send_many_emails
 import os
 
 from celery import Celery
+from converter.utils.db import db_session
+from custom_email.email_sender import send_many_emails
 import ffmpeg
 from models.submission import Submission, SubmissionStatus
 from models.user import User
 from settings import PROCESSED_FOLDER_PATH, PROCESSING_FOLDER_PATH
-from utils.db import db_session
 
 app = Celery("tasks", broker="redis://localhost:6379/0")
 
