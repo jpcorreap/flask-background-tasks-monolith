@@ -1,4 +1,4 @@
-from app import db
+from models.model import db
 
 
 class Contest(db.Model):
@@ -12,7 +12,7 @@ class Contest(db.Model):
     submissions = db.relationship(
         "Submission", backref="submission", cascade="all, delete-orphan"
     )
-    prize = db.Column(db.Double, nullable=False)
+    prize = db.Column(db.Float, nullable=False)
     script = db.Column(db.String(256), nullable=False)
     advices = db.Column(db.String(256), nullable=False)
     admin = db.Column(db.Integer, db.ForeignKey("admin.id"), nullable=False)

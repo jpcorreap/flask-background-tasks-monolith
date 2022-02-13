@@ -5,13 +5,12 @@ import uuid
 
 from flask import config, request
 from flask_restful import Resource
+from models.contest import Contest
 from models.model import db
 from models.submission import Submission
+from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from werkzeug.utils import secure_filename
-
-from backend.models.contest import Contest
-from backend.models.user import User
 
 ALLOWED_EXTENSIONS = {"mp3", "wav", "m4a", "mpc", "wma"}
 

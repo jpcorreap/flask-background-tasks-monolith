@@ -1,4 +1,4 @@
-from app import ma
+from schemas.schema import ma
 
 
 class ContestSchema(ma.Schema):

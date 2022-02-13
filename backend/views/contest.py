@@ -1,13 +1,12 @@
 from datetime import datetime
 
+from constants.format import DATE_FORMAT
 from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from models.contest import Contest
 from models.model import db
 from schemas.contest import contest_schema, contests_schema
-
-from backend.constants.format import DATE_FORMAT
 
 
 class ResourceContest(Resource):
@@ -44,9 +43,9 @@ class ResourceContestDetail(Resource):
         return contest_schema.dump(contest)
 
     @jwt_required()
-    def put(self, id_contest):
+    def put(self, contest_url):
         contest = Contest.query.filter_by(
-            id=id_contest, admin=get_jwt_identity()
+            url=contest_url, admin=get_jwt_identity()
         ).first_or_404()
         contest.url = request.json["url"]
         contest.name = request.json["name"]
@@ -60,18 +59,18 @@ class ResourceContestDetail(Resource):
         return contest_schema.dump(contest)
 
     @jwt_required()
-    def delete(self, id_contest):
+    def delete(self, contest_url):
         contest = Contest.query.filter_by(
-            id=id_contest, admin=get_jwt_identity()
+            url=contest_url, admin=get_jwt_identity()
         ).first_or_404()
         db.session.delete(contest)
         db.session.commit()
         return "", 204
 
     @jwt_required
-    def patch(self, id_contest):
+    def patch(self, contest_url):
         contest = Contest.query.filter_by(
-            id=id_contest, admin=get_jwt_identity()
+            url=contest_url, admin=get_jwt_identity()
         ).first_or_404()
         if url := request.json.get("url"):
             contest.url = url
