@@ -14,6 +14,7 @@ from backend.views.user import SignIn, SignUp
 app = Flask(__name__)
 app.config.from_object("settings")
 
+
 db.init_app(app)
 with app.app_context():
     db.create_all()
@@ -30,7 +31,8 @@ api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
 api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>/")
 api.add_resource(
-    ResourceSubmissionDetail, "/api/contests/<string:contest_url>/<int:id_submission>"
+    ResourceSubmissionDetail,
+    "/api/contests/<string:contest_url>/<string:id_submission>",
 )
 
 
