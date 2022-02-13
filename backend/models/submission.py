@@ -1,7 +1,7 @@
 from enum import Enum
 import uuid
 
-from app import db
+from models.model import db
 from sqlalchemy.dialects.postgresql import UUID
 
 
