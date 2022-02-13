@@ -1,4 +1,3 @@
-from msilib.schema import Error
 import os
 
 from celery import Celery
@@ -56,8 +55,8 @@ def process_audio_files():
             try:
                 convert_to_mp3(filename)
                 i.status = SubmissionStatus.converted
-            except Error:
-                print(Error)
+            except Exception as e:
+                print(e)
 
         converted_submissions = list(
             filter(
