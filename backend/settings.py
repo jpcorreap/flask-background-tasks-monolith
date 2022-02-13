@@ -14,3 +14,7 @@ PROPAGATE_EXCEPTIONS = True
 PROCESSING_FOLDER_PATH = "{}/converter/in_process".format(os.path.curdir)
 UPLOAD_FOLDER = PROCESSING_FOLDER_PATH
 PROCESSED_FOLDER_PATH = "{}/converter/processed".format(os.path.curdir)
+EMAIL_USER = os.getenv("EMAIL_USER")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
+EMAIL_SERVER_PORT = os.getenv("EMAIL_SERVER_PORT")
+EMAIL_SERVER_HOST = os.getenv("EMAIL_SERVER_HOST")
