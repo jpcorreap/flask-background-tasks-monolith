@@ -73,23 +73,21 @@ class ResourceContestDetail(Resource):
         contest = Contest.query.filter_by(
             id=id_contest, admin=get_jwt_identity()
         ).first_or_404()
-        if request.json.get("url"):
-            contest.url = request.json["url"]
-        if request.json.get("name"):
-            contest.name = request.json["name"]
-        if request.json.get("banner"):
-            contest.banner = request.json["banner"]
-        if request.json.get("prize"):
-            contest.prize = request.json["prize"]
-        if request.json.get("script"):
-            contest.script = request.json["script"]
-        if request.json.get("advices"):
-            contest.advices = request.json["advices"]
-        if request.json.get("start_date"):
-            contest.start_date = datetime.strptime(
-                request.json["start_date"], DATE_FORMAT
-            )
-        if request.json.get("end_date"):
-            contest.end_date = datetime.strptime(request.json["end_date"], DATE_FORMAT)
+        if url := request.json.get("url"):
+            contest.url = url
+        if name := request.json.get("name"):
+            contest.name = name
+        if banner := request.json.get("banner"):
+            contest.banner = banner
+        if prize := request.json.get("prize"):
+            contest.prize = prize
+        if script := request.json.get("script"):
+            contest.script = script
+        if advices := request.json.get("advices"):
+            contest.advices = advices
+        if start_date := request.json.get("start_date"):
+            contest.start_date = start_date
+        if end_date := request.json.get("end_date"):
+            contest.end_date = end_date
         db.session.commit()
         return contest_schema.dump(contest)
