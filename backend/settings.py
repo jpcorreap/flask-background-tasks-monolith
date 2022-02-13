@@ -10,3 +10,6 @@ DB_NAME = os.getenv("DB_NAME")
 SQLALCHEMY_DB_URI = f"postgresql://{PG_USER}:{PG_PASSWORD}@0.0.0.0:5432/{DB_NAME}"
 JWT_SECRET_KEY = os.getenv("SECRET")
 PROPAGATE_EXCEPTIONS = True
+PROCESSING_FOLDER_PATH = "{}/converter/in_process".format(os.path.curdir)
+UPLOAD_FOLDER = PROCESSING_FOLDER_PATH
+PROCESSED_FOLDER_PATH = "{}/converter/processed".format(os.path.curdir)
