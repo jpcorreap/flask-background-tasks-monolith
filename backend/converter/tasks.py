@@ -1,11 +1,26 @@
+from msilib.schema import Error
 import os
 
 from celery import Celery
 import ffmpeg
 from models.submission import Submission, SubmissionStatus
+from models.user import User
 from settings import PROCESSED_FOLDER_PATH, PROCESSING_FOLDER_PATH
+from utils.db import db_session
+
+from backend.email.email_sender import send_many_emails
 
 app = Celery("tasks", broker="redis://localhost:6379/0")
+
+
+class SqlAlchemyTask(app.Task):
+    """An abstract Celery Task that ensures that the connection the the
+    database is closed on task completion"""
+
+    abstract = True
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        db_session.remove()
 
 
 def convert_to_mp3(filename: str):
@@ -26,22 +41,42 @@ def convert_to_mp3(filename: str):
     print("\n-> El archivo convertir se copió a : {}".format(PROCESSED_FOLDER_PATH))
 
 
-@app.task
+@app.task(base=SqlAlchemyTask)
 def process_audio_files():
-    pending_submissions = Submission.query.filter_by(
-        status=SubmissionStatus.processing
-    ).all()
+    pending_submissions = (
+        db_session.query(Submission)
+        .filter_by(status=SubmissionStatus.processing)
+        .join(User, Submission.user_id == User.id)
+        .all()
+    )
 
     if pending_submissions:
-
         for i in pending_submissions:
             filename = "{id}.{file_type}".format(id=i.id, file_type=i.file_type)
-            convert_to_mp3(filename)
+            try:
+                convert_to_mp3(filename)
+                i.status = SubmissionStatus.converted
+            except Error:
+                print(Error)
+
+        converted_submissions = list(
+            filter(
+                lambda x: (x.status == SubmissionStatus.converted), pending_submissions
+            )
+        )
+        db_session.add_all(converted_submissions)
+        db_session.commit()
+
+        users_emails = [submission.user.email for submission in converted_submissions]
+
+        send_many_emails(
+            users_emails, "Your Submission has been converted successfully"
+        )
 
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # Calls test('hello') every 10 seconds.
+    # Calls process_audio_files every 15 minutes.
     sender.add_periodic_task(
-        120.0, process_audio_files.s(), name="Process Files every 2 minutes"
+        900, process_audio_files.s(), name="Process Files every 2 minutes"
     )

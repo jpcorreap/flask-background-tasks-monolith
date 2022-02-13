@@ -13,8 +13,7 @@ from werkzeug.utils import secure_filename
 from backend.models.contest import Contest
 from backend.models.user import User
 
-UPLOAD_FOLDER = "/path/to/the/uploads"
-ALLOWED_EXTENSIONS = {"mp3" "wav" "m4a" "mpc" "wma"}
+ALLOWED_EXTENSIONS = {"mp3", "wav", "m4a", "mpc", "wma"}
 
 
 def allowed_file(filename):
@@ -32,17 +31,17 @@ class ResourceSubmission(Resource):
         return submissions_schema.dump(submissions)
 
     def post(self, contest_url):
-
+        res = None
         if "file" not in request.files:
-            raise Exception("not file in request")
+            res = ("not file in request", 400)
 
         if "data" not in request.files:
-            raise Exception("not user data in request")
+            res = ("not user data in request", 400)
 
         file = request.files["file"]
 
         if file.filename == "":
-            raise Exception("no file founded in request")
+            res = ("no file founded in request", 400)
 
         json_data = json.load(request.files["data"])
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
@@ -62,7 +61,7 @@ class ResourceSubmission(Resource):
         if file and allowed_file(file.filename):
             file_id = uuid.uuid4()
             file_type = secure_filename(file.filename).split(".")[1]
-            final_name = "{id}.{file_type}".format(id=str(file_id), file_type=file_type)
+            final_name = f"{file_id}.{file_type}"
             file.save(os.path.join(config["UPLOAD_FOLDER"], final_name))
             new_submission = Submission(
                 id=file_id,
@@ -75,8 +74,9 @@ class ResourceSubmission(Resource):
             )
             db.session.add(new_submission)
             db.session.commit()
+            res = submission_schema.dump(new_submission)
 
-        return submission_schema.dump(new_submission)
+        return res
 
 
 class ResourceSubmissionDetail(Resource):
