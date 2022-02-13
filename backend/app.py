@@ -36,5 +36,4 @@ api.add_resource(
 
 @app.route("/")
 def serve():
-    print("Base route")
     return app.send_static_file("index.html")
