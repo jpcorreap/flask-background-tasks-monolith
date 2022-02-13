@@ -4,10 +4,9 @@ from flask import request
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_jwt_extended import create_access_token
 from flask_restful import Resource
+from models.admin import Admin
 from models.model import db
 from models.user import User
-
-from backend.models.admin import Admin
 
 
 class SignIn(Resource):
