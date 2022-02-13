@@ -7,6 +7,8 @@ from models.contest import Contest
 from models.model import db
 from schemas.contest import contest_schema, contests_schema
 
+from backend.constants.format import DATE_FORMAT
+
 
 class ResourceContest(Resource):
     @jwt_required()
@@ -24,10 +26,8 @@ class ResourceContest(Resource):
             url=request.json["url"],
             name=request.json["name"],
             banner=request.json["banner"],
-            start_date=datetime.strptime(
-                request.json["start_date"], "%Y-%m-%d %-H:%-M"
-            ),
-            end_date=datetime.strptime(request.json["end_date"], "%Y-%m-%d %-H:%-M"),
+            start_date=datetime.strptime(request.json["start_date"], DATE_FORMAT),
+            end_date=datetime.strptime(request.json["end_date"], DATE_FORMAT),
             prize=request.json["prize"],
             script=request.json["script"],
             advices=request.json["advices"],
@@ -48,18 +48,14 @@ class ResourceContestDetail(Resource):
         contest = Contest.query.filter_by(
             id=id_contest, admin=get_jwt_identity()
         ).first_or_404()
-        contest.url = (request.json["url"],)
-        contest.name = (request.json["name"],)
-        contest.banner = (request.json["banner"],)
-        contest.start_date = (
-            datetime.strptime(request.json["start_date"], "%Y-%m-%d %-H:%-M"),
-        )
-        contest.end_date = (
-            datetime.strptime(request.json["end_date"], "%Y-%m-%d %-H:%-M"),
-        )
-        contest.prize = (request.json["prize"],)
-        contest.script = (request.json["script"],)
-        contest.advices = (request.json["advices"],)
+        contest.url = request.json["url"]
+        contest.name = request.json["name"]
+        contest.banner = request.json["banner"]
+        contest.start_date = datetime.strptime(request.json["start_date"], DATE_FORMAT)
+        contest.end_date = datetime.strptime(request.json["end_date"], DATE_FORMAT)
+        contest.prize = request.json["prize"]
+        contest.script = request.json["script"]
+        contest.advices = request.json["advices"]
         db.session.commit()
         return contest_schema.dump(contest)
 
@@ -71,3 +67,29 @@ class ResourceContestDetail(Resource):
         db.session.delete(contest)
         db.session.commit()
         return "", 204
+
+    @jwt_required
+    def patch(self, id_contest):
+        contest = Contest.query.filter_by(
+            id=id_contest, admin=get_jwt_identity()
+        ).first_or_404()
+        if request.json.get("url"):
+            contest.url = request.json["url"]
+        if request.json.get("name"):
+            contest.name = request.json["name"]
+        if request.json.get("banner"):
+            contest.banner = request.json["banner"]
+        if request.json.get("prize"):
+            contest.prize = request.json["prize"]
+        if request.json.get("script"):
+            contest.script = request.json["script"]
+        if request.json.get("advices"):
+            contest.advices = request.json["advices"]
+        if request.json.get("start_date"):
+            contest.start_date = datetime.strptime(
+                request.json["start_date"], DATE_FORMAT
+            )
+        if request.json.get("end_date"):
+            contest.end_date = datetime.strptime(request.json["end_date"], DATE_FORMAT)
+        db.session.commit()
+        return contest_schema.dump(contest)
