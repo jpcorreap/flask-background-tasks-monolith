@@ -1,24 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import { Link, Route, Routes } from 'react-router-dom';
+import AdminLayout from './layouts/AdminLayout';
+import Contest from './pages/Contest';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<h1>Landing</h1>} />
+      <Route path="/test1" element={<h1>Test 1</h1>} />
+      <Route path="/test2" element={<h1>Test 2</h1>} />
+      <Route
+        path="/contest/:contestId"
+        element={
+          <AdminLayout>
+            <Contest />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <main style={{ padding: "1rem" }}>
+            <p>404 not found</p>
+            <Link to={"/"}>Go to home</Link>
+          </main>
+        }
+      />
+    </Routes>
   );
 }
 
