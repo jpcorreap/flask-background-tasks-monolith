@@ -1,10 +1,5 @@
-import { createContext, useContext } from "react";
-
-export const AuthContext = createContext({
-  user: undefined,
-  signin: (user, callback) => {},
-  signout: (callback) => {},
-});
+import { useContext } from "react";
+import { AuthContext } from "../components/AuthProvider";
 
 export function useAuth() {
   return useContext(AuthContext);

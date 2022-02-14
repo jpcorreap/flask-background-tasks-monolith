@@ -1,8 +1,13 @@
-import { useState } from "react";
+import { createContext, useState } from "react";
 import { authProvider } from "../helpers/auth";
-import { AuthContext } from "../hooks/useAuth";
 
-function AuthProvider({ children }) {
+export const AuthContext = createContext({
+  user: undefined,
+  signin: (user, callback) => {},
+  signout: (callback) => {},
+});
+
+export function AuthProvider({ children }) {
   let [user, setUser] = useState(null);
 
   let signin = (newUser, callback) => {
@@ -23,5 +28,3 @@ function AuthProvider({ children }) {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
-
-export default AuthProvider;
