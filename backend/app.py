@@ -27,7 +27,7 @@ api.add_resource(ResourceContest, "/api/contests")
 api.add_resource(ResourceContestDetail, "/api/contests/<string:contest_url>")
 api.add_resource(SignUp, "/api/signup")
 api.add_resource(SignIn, "/api/signin")
-api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>")
+api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>/submissions")
 api.add_resource(
     ResourceSubmissionDetail,
     "/api/contests/<string:contest_url>/<string:id_submission>",
