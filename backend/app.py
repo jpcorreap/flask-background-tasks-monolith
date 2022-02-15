@@ -5,13 +5,14 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from models.model import db
 from schemas.schema import ma
+from settings import config
 from views.contest import ResourceContest, ResourceContestDetail
 from views.submission import ResourceSubmission, ResourceSubmissionDetail
 from views.user import SignIn, SignUp
 
 # app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
 app = Flask(__name__)
-app.config.from_object("settings")
+app.config.from_object(config)
 
 db.init_app(app)
 with app.app_context():
