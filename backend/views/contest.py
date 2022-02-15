@@ -67,7 +67,7 @@ class ResourceContestDetail(Resource):
         db.session.commit()
         return "", 204
 
-    @jwt_required
+    @jwt_required()
     def patch(self, contest_url):
         contest = Contest.query.filter_by(
             url=contest_url, admin=get_jwt_identity()
