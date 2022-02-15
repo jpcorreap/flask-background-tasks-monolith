@@ -2,6 +2,8 @@ import os
 
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 class Config(object):
     PG_USER = os.getenv("PG_USER")
@@ -23,7 +25,6 @@ class Config(object):
     EMAIL_SERVER_HOST = os.getenv("EMAIL_SERVER_HOST")
 
 
-load_dotenv()
 config = Config()
 for dir in [
     config.PROCESSED_FOLDER_PATH,
