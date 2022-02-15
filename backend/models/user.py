@@ -8,6 +8,6 @@ class User(db.Model):
     last_names = db.Column(db.String(128), unique=True, nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=False, primary_key=True)
     submissions = db.relationship(
-        "Submission", backref="submission", cascade="all, delete-orphan"
+        "UserSubmission", backref="submission", cascade="all, delete-orphan"
     )
     admin = db.relationship("Admin", backref="admin", uselist=False)

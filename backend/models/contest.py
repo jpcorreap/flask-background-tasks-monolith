@@ -10,7 +10,7 @@ class Contest(db.Model):
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     submissions = db.relationship(
-        "Submission", backref="submission", cascade="all, delete-orphan"
+        "ContestSubmission", backref="submission", cascade="all, delete-orphan"
     )
     prize = db.Column(db.Float, nullable=False)
     script = db.Column(db.String(256), nullable=False)
