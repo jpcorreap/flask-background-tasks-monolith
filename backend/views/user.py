@@ -43,4 +43,7 @@ class SignUp(Resource):
         )
         db.session.add(new_admin)
         db.session.commit()
-        return "", 204
+        access_token = create_access_token(
+            identity=str(new_user.id), expires_delta=timedelta(hours=2)
+        )
+        return {"access_token": access_token}, 200
