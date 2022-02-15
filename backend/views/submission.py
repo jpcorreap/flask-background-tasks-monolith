@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 import uuid
 
-from flask import config, request
+from flask import request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from models.contest import Contest
@@ -65,7 +65,7 @@ class ResourceSubmission(Resource):
             )
             db.session.add(new_submission)
             db.session.commit()
-            file.save(os.path.join(config["UPLOAD_FOLDER"], final_name))
+            file.save(os.path.join(os.getenv("UPLOAD_FOLDER"), final_name))
             return submission_schema.dump(new_submission)
         return ("Not allowed file type", 400)
 
