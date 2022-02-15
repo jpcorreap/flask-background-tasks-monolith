@@ -30,7 +30,7 @@ api.add_resource(SignIn, "/api/signin")
 api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>/submissions")
 api.add_resource(
     ResourceSubmissionDetail,
-    "/api/contests/<string:contest_url>/<string:id_submission>",
+    "/api/contests/<string:contest_url>/submissions/<string:id_submission>",
 )
 
 
