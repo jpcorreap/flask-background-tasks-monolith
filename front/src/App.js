@@ -4,14 +4,17 @@ import AdminLayout from "./layouts/AdminLayout";
 import Contest from "./pages/ContestPage";
 import { AuthProvider } from "./components/AuthProvider";
 import LoginPage from "./pages/LoginPage";
+import SignUpPage from "./pages/SignUpPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<h1>Landing</h1>} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/test1" element={<h1>Test 1</h1>} />
         <Route path="/test2" element={<h1>Test 2</h1>} />
+        <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
           path="/protected"
