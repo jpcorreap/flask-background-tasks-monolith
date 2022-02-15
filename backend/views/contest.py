@@ -34,10 +34,11 @@ class ResourceContest(Resource):
                 if file.filename == "":
                     return ("no file found in request", 400)
                 if allowed_file(file.filename, "image"):
+                    filename = f"{request.form['url']}.{file.filename.split('.')[-1]}"
                     new_contest = Contest(
                         url=request.form["url"],
                         name=request.form["name"],
-                        banner=file.filename,
+                        banner=filename,
                         start_date=datetime.strptime(
                             request.form["start_date"], DATE_FORMAT
                         ),
@@ -51,7 +52,7 @@ class ResourceContest(Resource):
                     )
                     db.session.add(new_contest)
                     db.session.commit()
-                    file.save(os.path.join(config.BANNER_FOLDER_PATH, file.filename))
+                    file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
                     return contest_schema.dump(new_contest)
                 return ("Not allowed file type", 400)
             return ("Not file was sent", 400)
@@ -76,8 +77,9 @@ class ResourceContestDetail(Resource):
                 if file.filename == "":
                     return ("no file found in request", 400)
                 if allowed_file(file.filename, "image"):
-                    contest.banner = file.filename
-                    file.save(os.path.join(config.BANNER_FOLDER_PATH, file.filename))
+                    filename = f"{contest.url}.{file.filename.split('.')[-1]}"
+                    contest.banner = filename
+                    file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
             contest.url = request.form["url"]
             contest.name = request.form["name"]
             contest.start_date = datetime.strptime(
@@ -114,8 +116,9 @@ class ResourceContestDetail(Resource):
                 contest.name = name
             if file := request.files.get("file"):
                 if file.filename != "" and allowed_file(file.filename, "image"):
-                    contest.banner = file.filename
-                    file.save(os.path.join(config.BANNER_FOLDER_PATH, file.filename))
+                    filename = f"{contest.url}.{file.filename.split('.')[-1]}"
+                    contest.banner = filename
+                    file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
                 else:
                     return ("invalid file found in request", 400)
             if prize := request.form.get("prize"):
