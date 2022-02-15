@@ -1,0 +1,282 @@
+{
+	"info": {
+		"_postman_id": "6ae35d59-760c-490f-8b09-f4f2d5a8d1a4",
+		"name": "P1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"names\": \"Carlos Esmits\",\r\n    \"last_names\":\"Correa\",\r\n    \"email\": \"admin1@prueba.com\",\r\n    \"company_name\": \"Probanding S.A\",\r\n    \"password\":\"123asalacho\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/signup",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('token', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin1@prueba.com\",\r\n    \"password\":\"123asalacho\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/signin",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Contest",
+			"item": [
+				{
+					"name": "Create Contest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('contest_url', res.url);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner.jpg\",\r\n    \"start_date\":\"2021-02-14 15:00\",\r\n    \"end_date\":\"2021-02-14 15:00\",\r\n    \"prize\": 123.456,\r\n    \"script\":\"This is a script lol\",\r\n    \"advices\": \"No joking\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/contests",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner.jpg\",\r\n    \"start_date\":\"2021-02-14 15:00\",\r\n    \"end_date\":\"2021-02-14 15:00\",\r\n    \"prize\": 123.456,\r\n    \"script\":\"This is a script lol\",\r\n    \"advices\": \"joking\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/contests/{contest_url}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{contest_url}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Contest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner2.jpg\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/contests/{contest_url}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{contest_url}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/{contest_url}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{contest_url}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contest",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/{contest_url}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{contest_url}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Submission",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
