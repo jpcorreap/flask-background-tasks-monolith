@@ -31,6 +31,6 @@ for dir in [
     config.BANNER_FOLDER_PATH,
 ]:
     for pos in range(len(dir.split("/"))):
-        curr_dir = "/".join(dir.split("/")[:pos])
+        curr_dir = "/".join(dir.split("/")[: pos + 1])
         if not os.path.exists(curr_dir):
             os.mkdir(curr_dir)
