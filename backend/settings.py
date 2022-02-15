@@ -30,7 +30,7 @@ for dir in [
     config.PROCESSING_FOLDER_PATH,
     config.BANNER_FOLDER_PATH,
 ]:
-    for pos in len(dir.split("/")):
+    for pos in range(len(dir.split("/"))):
         curr_dir = "/".join(dir.split("/")[:pos])
         if not os.path.exists(curr_dir):
             os.mkdir(curr_dir)
