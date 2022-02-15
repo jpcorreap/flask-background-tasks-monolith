@@ -42,12 +42,12 @@ class ResourceSubmission(Resource):
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
         user = User.query.filter_by(email=request.form["email"]).first()
         if not user:
-            new_user = User(
+            user = User(
                 email=request.form["email"],
                 names=request.form["names"],
                 last_names=request.form["last_names"],
             )
-            db.session.add(new_user)
+            db.session.add(user)
             db.session.flush()
         new_submission: Submission
         if file and allowed_file(file.filename, "audio"):
