@@ -10,12 +10,24 @@
 			"item": [
 				{
 					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('token', res.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"names\": \"Carlos Esmits\",\r\n    \"last_names\":\"Correa\",\r\n    \"email\": \"admin1@prueba.com\",\r\n    \"company_name\": \"Probanding S.A\",\r\n    \"password\":\"123asalacho\"\r\n}",
+							"raw": "{\r\n    \"names\": \"Carlos Esmitss\",\r\n    \"last_names\":\"Correa Door\",\r\n    \"email\": \"admin2@prueba.com\",\r\n    \"company_name\": \"Probanding S.A\",\r\n    \"password\":\"123asalacho\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -105,8 +117,49 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner.jpg\",\r\n    \"start_date\":\"2021-02-14 15:00\",\r\n    \"end_date\":\"2021-02-14 15:00\",\r\n    \"prize\": 123.456,\r\n    \"script\":\"This is a script lol\",\r\n    \"advices\": \"No joking\"\r\n}",
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "comercial-tv-8",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Comercial TV 6",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Carlos/Downloads/abd1.jpg"
+								},
+								{
+									"key": "start_date",
+									"value": "2021-02-14T15:0",
+									"type": "text"
+								},
+								{
+									"key": "end_date",
+									"value": "2021-02-14T15:0",
+									"type": "text"
+								},
+								{
+									"key": "prize",
+									"value": "123.456",
+									"type": "text"
+								},
+								{
+									"key": "script",
+									"value": "This is a script lol",
+									"type": "text"
+								},
+								{
+									"key": "advices",
+									"value": "No joking",
+									"type": "text"
+								}
+							],
 							"options": {
 								"raw": {
 									"language": "json"
@@ -127,6 +180,18 @@
 				},
 				{
 					"name": "Update Contest",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('contest_url', res.url);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -141,8 +206,49 @@
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner.jpg\",\r\n    \"start_date\":\"2021-02-14 15:00\",\r\n    \"end_date\":\"2021-02-14 15:00\",\r\n    \"prize\": 123.456,\r\n    \"script\":\"This is a script lol\",\r\n    \"advices\": \"joking\"\r\n}",
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "comercial-tv-8",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Comercial TV",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Carlos/Downloads/abd1.jpg"
+								},
+								{
+									"key": "start_date",
+									"value": "2021-02-14T15:00",
+									"type": "text"
+								},
+								{
+									"key": "end_date",
+									"value": "2021-02-14T15:00",
+									"type": "text"
+								},
+								{
+									"key": "prize",
+									"value": "123.456",
+									"type": "text"
+								},
+								{
+									"key": "script",
+									"value": "This is a script lol",
+									"type": "text"
+								},
+								{
+									"key": "advices",
+									"value": "joking",
+									"type": "text"
+								}
+							],
 							"options": {
 								"raw": {
 									"language": "json"
@@ -150,13 +256,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{server}}/contests/{contest_url}",
+							"raw": "{{server}}/contests/{{contest_url}}",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"contests",
-								"{contest_url}"
+								"{{contest_url}}"
 							]
 						}
 					},
@@ -178,8 +284,24 @@
 						"method": "PATCH",
 						"header": [],
 						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"url\":\"comercial-tv\",\r\n    \"name\":\"Comercial TV\",\r\n    \"banner\":\"banner2.jpg\"\r\n}",
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "url",
+									"value": "comercial-tv-8",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Comercial TV",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Carlos/Downloads/abd1.jpg"
+								}
+							],
 							"options": {
 								"raw": {
 									"language": "json"
@@ -187,13 +309,40 @@
 							}
 						},
 						"url": {
-							"raw": "{{server}}/contests/{contest_url}",
+							"raw": "{{server}}/contests/{{contest_url}}",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"contests",
-								"{contest_url}"
+								"{{contest_url}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests"
 							]
 						}
 					},
@@ -215,13 +364,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/contests/{contest_url}",
+							"raw": "{{server}}/contests/{{contest_url}}",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"contests",
-								"{contest_url}"
+								"{{contest_url}}"
 							]
 						}
 					},
@@ -243,13 +392,13 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/contests/{contest_url}",
+							"raw": "{{server}}/contests/{{contest_url}}",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"contests",
-								"{contest_url}"
+								"{{contest_url}}"
 							]
 						}
 					},
@@ -261,22 +410,135 @@
 			"name": "Submission",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Create submission",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('submission_id', res.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "prueba@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "names",
+									"value": "Carlos Esmits",
+									"type": "text"
+								},
+								{
+									"key": "last_names",
+									"value": "Correa Doors",
+									"type": "text"
+								},
+								{
+									"key": "observations",
+									"value": "This is a test submission :( ",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Carlos/Downloads/ringtones-llamada-de-homero.mp3"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/contests/{{contest_url}}/submissions",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{{contest_url}}",
+								"submissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submissions",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/{{contest_url}}/submissions",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{{contest_url}}",
+								"submissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submissions As Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/{{contest_url}}/submissions",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{{contest_url}}",
+								"submissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Submission",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/{{contest_url}}/submissions/{{submission_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"{{contest_url}}",
+								"submissions",
+								"{{submission_id}}"
+							]
+						}
 					},
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "New Request",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
 		}
 	]
 }
