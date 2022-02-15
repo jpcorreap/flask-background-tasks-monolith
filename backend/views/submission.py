@@ -11,9 +11,8 @@ from models.submission import Submission
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from settings import config
+from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
-
-from backend.utils.extensions import allowed_file
 
 
 class ResourceSubmission(Resource):

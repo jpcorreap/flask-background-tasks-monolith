@@ -10,8 +10,8 @@ from models.model import db
 from schemas.contest import contest_schema, contests_schema
 from settings import config
 from sqlalchemy.exc import SQLAlchemyError
-
-from backend.utils.extensions import allowed_file
+from utils.extensions import allowed_file
+from utils.validators import validate_url
 
 
 class ResourceContest(Resource):
@@ -35,6 +35,8 @@ class ResourceContest(Resource):
                     return ("no file found in request", 400)
                 if allowed_file(file.filename, "image"):
                     filename = f"{request.form['url']}.{file.filename.split('.')[-1]}"
+                    if not validate_url(request.form["url"]):
+                        return ("Wrong URL", 400)
                     new_contest = Contest(
                         url=request.form["url"],
                         name=request.form["name"],
@@ -80,6 +82,8 @@ class ResourceContestDetail(Resource):
                     filename = f"{contest.url}.{file.filename.split('.')[-1]}"
                     contest.banner = filename
                     file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
+            if not validate_url(request.form["url"]):
+                return ("Wrong URL", 400)
             contest.url = request.form["url"]
             contest.name = request.form["name"]
             contest.start_date = datetime.strptime(
@@ -111,6 +115,8 @@ class ResourceContestDetail(Resource):
                 url=contest_url, admin=get_jwt_identity()
             ).first_or_404()
             if url := request.form.get("url"):
+                if not validate_url(url):
+                    return ("Wrong URL", 400)
                 contest.url = url
             if name := request.form.get("name"):
                 contest.name = name
