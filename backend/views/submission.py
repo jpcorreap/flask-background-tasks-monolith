@@ -10,6 +10,7 @@ from models.model import db
 from models.submission import Submission
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
+from settings import config
 from werkzeug.utils import secure_filename
 
 from backend.utils.extensions import allowed_file
@@ -65,7 +66,7 @@ class ResourceSubmission(Resource):
             )
             db.session.add(new_submission)
             db.session.commit()
-            file.save(os.path.join(os.getenv("UPLOAD_FOLDER"), final_name))
+            file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
             return submission_schema.dump(new_submission)
         return ("Not allowed file type", 400)
 
