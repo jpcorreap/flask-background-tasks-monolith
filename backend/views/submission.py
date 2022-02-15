@@ -23,13 +23,13 @@ class ResourceSubmission(Resource):
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id)
                 .order_by(Submission.upload_date.desc())
-                .get_or_404()
+                .all()
             )
         else:
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id, status="converted")
                 .order_by(Submission.upload_date.desc())
-                .get_or_404()
+                .all()
             )
         return submissions_schema.dump(submissions)
 
