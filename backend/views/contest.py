@@ -1,9 +1,9 @@
 from datetime import datetime
 import os
 import uuid
-
+from constants.extensions import MAPPER_IMAGE_FILE
 from constants.format import DATE_FORMAT
-from flask import request
+from flask import Response, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from models.contest import Contest
@@ -156,3 +156,16 @@ class ResourceContestDetail(Resource):
         except SQLAlchemyError as e:
             error = str(e.__dict__["orig"])
             return error, 422
+
+
+class ResourceBannerImageContest(Resource):
+    def get(self, url_contest):
+        contest = Contest.query.filter_by(url=url_contest).first_or_404()
+        route = os.path.join(config.BANNER_FOLDER_PATH, f"{contest.id}.{contest.image_type}")
+        def generate():
+            with open(route, "rb") as fwav:
+                data = fwav.read(1024)
+                while data:
+                    yield data
+                    data = fwav.read(1024)
+        return Response(generate(), mimetype=MAPPER_IMAGE_FILE[contest.image_type])

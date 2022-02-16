@@ -10,3 +10,8 @@ MAPPER_AUDIO_FILE = {
     "oga":"audio/ogg",
     "m4a":"audio/mp4a-latm",
 } 
+
+MAPPER_IMAGE_FILE = {
+    "jpg":"image/jpeg",
+    "png":"image/png",
+} 
