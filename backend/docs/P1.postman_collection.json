@@ -121,7 +121,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv",
+									"value": "comercial-tv5",
 									"type": "text"
 								},
 								{
@@ -205,7 +205,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv-8",
+									"value": "comercial-tv-5",
 									"type": "text"
 								},
 								{
@@ -278,7 +278,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv-8",
+									"value": "comercial-tv-10",
 									"type": "text"
 								},
 								{
@@ -506,6 +506,16 @@
 				{
 					"name": "Get Submission",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -541,6 +551,30 @@
 							"path": [
 								"submissions",
 								"{{submission_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banners",
+			"item": [
+				{
+					"name": "Get Banner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/banner/{{contest_url}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"banner",
+								"{{contest_url}}"
 							]
 						}
 					},
