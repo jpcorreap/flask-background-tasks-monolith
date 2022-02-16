@@ -14,7 +14,7 @@ from settings import config
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
 
-from backend.constants.limit import ROWS_PER_PAGE
+from constants.limit import ROWS_PER_PAGE
 
 
 class ResourceSubmission(Resource):
@@ -26,13 +26,13 @@ class ResourceSubmission(Resource):
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id)
                 .order_by(Submission.upload_date.desc())
-                .all()
+                
             )
         else:
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id, status="converted")
                 .order_by(Submission.upload_date.desc())
-                .all()
+                
             )
         return submissions_schema.dump(
             submissions.paginate(page=page, per_page=ROWS_PER_PAGE).items
