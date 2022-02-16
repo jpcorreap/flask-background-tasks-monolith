@@ -121,7 +121,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv5",
+									"value": "comercial-tv11",
 									"type": "text"
 								},
 								{
@@ -322,12 +322,18 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/contests",
+							"raw": "{{server}}/contests?page=1",
 							"host": [
 								"{{server}}"
 							],
 							"path": [
 								"contests"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -461,7 +467,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/contests/{{contest_url}}/submissions",
+							"raw": "{{server}}/contests/{{contest_url}}/submissions?page=1",
 							"host": [
 								"{{server}}"
 							],
@@ -469,6 +475,12 @@
 								"contests",
 								"{{contest_url}}",
 								"submissions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -490,7 +502,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{server}}/contests/{{contest_url}}/submissions",
+							"raw": "{{server}}/contests/{{contest_url}}/submissions?page=1",
 							"host": [
 								"{{server}}"
 							],
@@ -498,6 +510,12 @@
 								"contests",
 								"{{contest_url}}",
 								"submissions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
 							]
 						}
 					},
