@@ -14,14 +14,19 @@ from sqlalchemy.exc import SQLAlchemyError
 from utils.extensions import allowed_file
 from utils.validators import validate_url
 
+from backend.constants.limit import ROWS_PER_PAGE
+
 
 class ResourceContest(Resource):
     @jwt_required()
     def get(self):
+        page = request.args.get("page", 1, type=int)
         contests = (
             Contest.query.filter_by(admin=get_jwt_identity())
             .order_by(Contest.id.desc())
             .all()
+            .paginate(page=page, per_page=ROWS_PER_PAGE)
+            .items
         )
         return contests_schema.dump(contests)
 
