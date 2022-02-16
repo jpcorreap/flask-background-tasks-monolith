@@ -12,8 +12,6 @@ function App() {
     <AuthProvider>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/test1" element={<h1>Test 1</h1>} />
-        <Route path="/test2" element={<h1>Test 2</h1>} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
@@ -21,6 +19,14 @@ function App() {
           element={
             <AdminLayout>
               <h3>Protected</h3>
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/contests/"
+          element={
+            <AdminLayout>
+              <Contest />
             </AdminLayout>
           }
         />

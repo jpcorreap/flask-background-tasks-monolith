@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
@@ -7,30 +7,13 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
+import { Link as MaterialLink } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import Copyright from "../components/Copyright";
 
 export default function LoginPage() {
   let navigate = useNavigate();
@@ -44,6 +27,7 @@ export default function LoginPage() {
 
     let formData = new FormData(event.currentTarget);
     let username = formData.get("username");
+    // tomarlo de la variable de estado
 
     auth.signin(username, () => {
       // Send them back to the page they tried to visit when they were
@@ -104,12 +88,13 @@ export default function LoginPage() {
             onSubmit={handleSubmit}
             sx={{ mt: 1 }}
           >
+            <p>You must log in to view the page at {from}</p>
             <TextField
               margin="normal"
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email address"
               name="email"
               autoComplete="email"
               autoFocus
@@ -124,12 +109,9 @@ export default function LoginPage() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
             <Button
               type="submit"
+              onClick={handleSubmit}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
@@ -137,29 +119,12 @@ export default function LoginPage() {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
               </Grid>
             </Grid>
             <Copyright sx={{ mt: 5 }} />
           </Box>
-          <div>
-            <p>You must log in to view the page at {from}</p>
-
-            <form onSubmit={handleSubmit}>
-              <label>
-                Username: <input name="username" type="text" />
-              </label>{" "}
-              <button type="submit">Login</button>
-            </form>
-          </div>
         </Box>
       </Grid>
     </Grid>
