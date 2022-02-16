@@ -1,5 +1,6 @@
 from datetime import datetime
 import os
+import uuid
 
 from constants.format import DATE_FORMAT
 from flask import request
@@ -34,13 +35,16 @@ class ResourceContest(Resource):
                 if file.filename == "":
                     return ("no file found in request", 400)
                 if allowed_file(file.filename, "image"):
-                    filename = f"{request.form['url']}.{file.filename.split('.')[-1]}"
+                    file_id = uuid.uuid4()
+                    file_type = file.filename.split(".")[-1]
+                    filename = f"{file_id}.{file_type}"
                     if not validate_url(request.form["url"]):
                         return ("Wrong URL", 400)
                     new_contest = Contest(
+                        id=file_id,
                         url=request.form["url"],
                         name=request.form["name"],
-                        banner=filename,
+                        image_type=file_type,
                         start_date=datetime.strptime(
                             request.form["start_date"], DATE_FORMAT
                         ),
@@ -55,6 +59,7 @@ class ResourceContest(Resource):
                     db.session.add(new_contest)
                     db.session.commit()
                     file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
+                    file.close()
                     return contest_schema.dump(new_contest)
                 return ("Not allowed file type", 400)
             return ("Not file was sent", 400)
@@ -79,9 +84,11 @@ class ResourceContestDetail(Resource):
                 if file.filename == "":
                     return ("no file found in request", 400)
                 if allowed_file(file.filename, "image"):
-                    filename = f"{contest.url}.{file.filename.split('.')[-1]}"
-                    contest.banner = filename
+                    file_type = file.filename.split(".")[-1]
+                    filename = f"{contest.id}.{file_type}"
+                    contest.image_type = file_type
                     file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
+                    file.close()
             if not validate_url(request.form["url"]):
                 return ("Wrong URL", 400)
             contest.url = request.form["url"]
@@ -122,9 +129,11 @@ class ResourceContestDetail(Resource):
                 contest.name = name
             if file := request.files.get("file"):
                 if file.filename != "" and allowed_file(file.filename, "image"):
-                    filename = f"{contest.url}.{file.filename.split('.')[-1]}"
-                    contest.banner = filename
+                    file_type = file.filename.split(".")[-1]
+                    filename = f"{contest.id}.{file_type}"
+                    contest.image_type = file_type
                     file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
+                    file.close()
                 else:
                     return ("invalid file found in request", 400)
             if prize := request.form.get("prize"):

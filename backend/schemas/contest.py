@@ -7,7 +7,7 @@ class ContestSchema(ma.Schema):
             "id",
             "url",
             "name",
-            "banner",
+            "image_type",
             "start_date",
             "end_date",
             "submissions",

@@ -1,12 +1,15 @@
+import uuid
+
 from models.model import db
+from sqlalchemy.dialects.postgresql import UUID
 
 
 class Contest(db.Model):
     __tablename__ = "contest"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     url = db.Column(db.String(128), unique=True, nullable=False)
     name = db.Column(db.String(128), nullable=False)
-    banner = db.Column(db.String(128), unique=True, nullable=False)
+    image_type = db.Column(db.String(16), unique=True, nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
     submissions = db.relationship("Submission", cascade="all, delete-orphan")
