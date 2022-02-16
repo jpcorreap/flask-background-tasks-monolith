@@ -77,11 +77,17 @@ class ResourceSubmission(Resource):
 
 
 class ResourceSubmissionDetail(Resource):
+    @jwt_required(optional=True)
     def get(self, contest_url, id_submission):
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
-        submission = Submission.query.filter_by(
-            id=id_submission, contest_id=contest.id
-        ).first_or_404()
+        if get_jwt_identity():
+            submission = Submission.query.filter_by(
+                id=id_submission, contest_id=contest.id
+            ).first_or_404()
+        else:
+            submission = Submission.query.filter_by(
+                id=id_submission, contest_id=contest.id, status="converted"
+            ).first_or_404()
         return submission_schema.dump(submission)
 
     def patch(self, id_submission):
