@@ -6,6 +6,7 @@ from schemas.submission import SubmissionSchema
 
 class ContestSchema(ma.Schema):
     model = Contest
+    submissions = (fields.List(fields.Nested(SubmissionSchema, required=True)),)
 
     class Meta:
         fields = (
@@ -20,8 +21,6 @@ class ContestSchema(ma.Schema):
             "advices",
             "admin",
         )
-
-    submissions = fields.List(fields.Nested(SubmissionSchema, required=True))
 
 
 contest_schema = ContestSchema()
