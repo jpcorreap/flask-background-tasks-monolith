@@ -3,7 +3,15 @@ from schemas.schema import ma
 
 class SubmissionSchema(ma.Schema):
     class Meta:
-        fields = ("id", "user_id", "observations", "status", "contest_id", "file_type")
+        fields = (
+            "id",
+            "user_id",
+            "observations",
+            "status",
+            "contest_id",
+            "file_type",
+            "upload_date",
+        )
 
 
 submission_schema = SubmissionSchema()

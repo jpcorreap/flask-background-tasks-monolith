@@ -14,10 +14,13 @@ from settings import config
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
 
+from backend.constants.limit import ROWS_PER_PAGE
+
 
 class ResourceSubmission(Resource):
     @jwt_required(optional=True)
     def get(self, contest_url):
+        page = request.args.get("page", 1, type=int)
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
         if get_jwt_identity():
             submissions = (
@@ -31,7 +34,9 @@ class ResourceSubmission(Resource):
                 .order_by(Submission.upload_date.desc())
                 .all()
             )
-        return submissions_schema.dump(submissions)
+        return submissions_schema.dump(
+            submissions.paginate(page=page, per_page=ROWS_PER_PAGE).items
+        )
 
     def post(self, contest_url):
         if "file" not in request.files:
