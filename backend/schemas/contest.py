@@ -10,7 +10,6 @@ class ContestSchema(ma.Schema):
             "image_type",
             "start_date",
             "end_date",
-            "submissions",
             "prize",
             "script",
             "advices",
