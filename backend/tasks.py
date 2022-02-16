@@ -80,5 +80,5 @@ def process_audio_files():
 def setup_periodic_tasks(sender, **kwargs):
     # Calls process_audio_files every 15 minutes.
     sender.add_periodic_task(
-        10, process_audio_files.s(), name="Process Files every 15 minutes"
+        900, process_audio_files.s(), name="Process Files every 15 minutes"
     )
