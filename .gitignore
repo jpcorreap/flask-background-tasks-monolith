@@ -133,3 +133,7 @@ dmypy.json
 venv
 # Pyre type checker
 .pyre/
+
+#Media folders
+converter/
+img/

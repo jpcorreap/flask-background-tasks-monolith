@@ -11,9 +11,8 @@ from models.submission import Submission
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from settings import config
+from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
-
-from backend.utils.extensions import allowed_file
 
 
 class ResourceSubmission(Resource):
@@ -24,13 +23,13 @@ class ResourceSubmission(Resource):
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id)
                 .order_by(Submission.upload_date.desc())
-                .get_or_404()
+                .all()
             )
         else:
             submissions = (
                 Submission.query.filter_by(contest_id=contest.id, status="converted")
                 .order_by(Submission.upload_date.desc())
-                .get_or_404()
+                .all()
             )
         return submissions_schema.dump(submissions)
 
@@ -43,12 +42,12 @@ class ResourceSubmission(Resource):
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
         user = User.query.filter_by(email=request.form["email"]).first()
         if not user:
-            new_user = User(
+            user = User(
                 email=request.form["email"],
                 names=request.form["names"],
                 last_names=request.form["last_names"],
             )
-            db.session.add(new_user)
+            db.session.add(user)
             db.session.flush()
         new_submission: Submission
         if file and allowed_file(file.filename, "audio"):
