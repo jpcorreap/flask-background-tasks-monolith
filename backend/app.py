@@ -7,7 +7,7 @@ from models.model import db
 from schemas.schema import ma
 from settings import config
 from views.contest import ResourceContest, ResourceContestDetail
-from views.submission import ResourceSubmission, ResourceSubmissionDetail
+from views.submission import ResourceAudioSubmission, ResourceSubmission, ResourceSubmissionDetail
 from views.user import SignIn, SignUp
 
 # app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
@@ -31,6 +31,10 @@ api.add_resource(ResourceSubmission, "/api/contests/<string:contest_url>/submiss
 api.add_resource(
     ResourceSubmissionDetail,
     "/api/contests/<string:contest_url>/submissions/<string:id_submission>",
+)
+api.add_resource(
+    ResourceAudioSubmission,
+    "/api/submissions/<string:id>",
 )
 
 

@@ -1,7 +1,6 @@
 import os
-
 from celery import Celery
-from converter.utils.db import db_session
+from utils.db import db_session
 from custom_email.email_sender import send_many_emails
 import ffmpeg
 from models.submission import Submission, SubmissionStatus
@@ -76,5 +75,5 @@ def process_audio_files():
 def setup_periodic_tasks(sender, **kwargs):
     # Calls process_audio_files every 15 minutes.
     sender.add_periodic_task(
-        900, process_audio_files.s(), name="Process Files every 2 minutes"
+        900, process_audio_files.s(), name="Process Files every 15 minutes"
     )
