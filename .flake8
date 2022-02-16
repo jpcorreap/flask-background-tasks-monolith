@@ -1,0 +1,25 @@
+[flake8]
+
+ignore =
+    B902,
+    C901,
+    D100, # Missing docstring
+    D101, # Missing docstring in public class
+    D102, # Missing docstring in public method
+    D103, # Missing docstring in public function
+    D104, # Missing docstring in public package
+    D105, # Missing docstring in magic method
+    D106, # Missing docstring in public nested class
+    D107, # Missing docstring in __init__
+    E203, # Whitespace before ':'
+    W503, # Line break occurred before a binary operator
+    E501
+
+max-line-length = 120
+max-complexity = 12
+select = C,E,F,W,B,B950
+inline-quotes = double
+exclude = .git,
+          __pycache__,
+          venv,
+          .venv,
