@@ -20,6 +20,7 @@ class ContestSchema(ma.Schema):
             "script",
             "advices",
             "admin",
+            "submissions",
         )
 
 
