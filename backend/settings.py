@@ -31,7 +31,8 @@ for dir in [
     config.PROCESSING_FOLDER_PATH,
     config.BANNER_FOLDER_PATH,
 ]:
-    for pos in range(len(dir.split("/"))):
-        curr_dir = "/".join(dir.split("/")[: pos + 1])
+    subdirs = dir.split("/")
+    for pos in range(len(subdirs)):
+        curr_dir = "/".join(subdirs[: pos + 1])
         if not os.path.exists(curr_dir):
             os.mkdir(curr_dir)

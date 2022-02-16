@@ -66,6 +66,7 @@ class ResourceSubmission(Resource):
             db.session.add(new_submission)
             db.session.commit()
             file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
+            file.close()
             return submission_schema.dump(new_submission)
         return ("Not allowed file type", 400)
 
