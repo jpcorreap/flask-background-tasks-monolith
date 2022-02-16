@@ -65,7 +65,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"admin1@prueba.com\",\r\n    \"password\":\"123asalacho\"\r\n}",
+							"raw": "{\r\n    \"email\": \"admin2@prueba.com\",\r\n    \"password\":\"123asalacho\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -121,12 +121,12 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv-8",
+									"value": "comercial-tv5",
 									"type": "text"
 								},
 								{
 									"key": "name",
-									"value": "Comercial TV 6",
+									"value": "Comercial TV",
 									"type": "text"
 								},
 								{
@@ -159,12 +159,7 @@
 									"value": "No joking",
 									"type": "text"
 								}
-							],
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{server}}/contests",
@@ -210,7 +205,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv-8",
+									"value": "comercial-tv-5",
 									"type": "text"
 								},
 								{
@@ -248,12 +243,7 @@
 									"value": "joking",
 									"type": "text"
 								}
-							],
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{server}}/contests/{{contest_url}}",
@@ -288,7 +278,7 @@
 							"formdata": [
 								{
 									"key": "url",
-									"value": "comercial-tv-8",
+									"value": "comercial-tv-10",
 									"type": "text"
 								},
 								{
@@ -301,12 +291,7 @@
 									"type": "file",
 									"src": "/C:/Users/Carlos/Downloads/abd1.jpg"
 								}
-							],
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
+							]
 						},
 						"url": {
 							"raw": "{{server}}/contests/{{contest_url}}",
@@ -521,6 +506,16 @@
 				{
 					"name": "Get Submission",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -533,6 +528,53 @@
 								"{{contest_url}}",
 								"submissions",
 								"{{submission_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Audios",
+			"item": [
+				{
+					"name": "Get audio",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/submissions/{{submission_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"submissions",
+								"{{submission_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Banners",
+			"item": [
+				{
+					"name": "Get Banner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/contests/banner/{{contest_url}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"contests",
+								"banner",
+								"{{contest_url}}"
 							]
 						}
 					},
