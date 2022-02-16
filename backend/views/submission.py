@@ -98,8 +98,11 @@ class ResourceSubmissionDetail(Resource):
 
 
 class ResourceAudioSubmission(Resource):
+    @jwt_required(optional=True)
     def get(self, id):
         submission = Submission.query.filter_by(id=id).first_or_404()
+        if submission.status == SubmissionStatus.processing and not get_jwt_identity():
+            return Response(status=401)
         route = os.path.join(config.PROCESSED_FOLDER_PATH, f"{submission.id}.{submission.file_type}") if  submission.status == SubmissionStatus.converted else os.path.join(config.PROCESSING_FOLDER_PATH, f"{submission.id}.{submission.file_type}")
         def generate():
             with open(route, "rb") as fwav:
