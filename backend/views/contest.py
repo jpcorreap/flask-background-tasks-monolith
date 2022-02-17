@@ -1,21 +1,21 @@
 from datetime import datetime
 import os
 import uuid
+
 from constants.extensions import MAPPER_IMAGE_FILE
 from constants.format import DATE_FORMAT
+from constants.limit import ROWS_PER_PAGE
 from flask import Response, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from models.contest import Contest
-from models.submission import Submission
 from models.model import db
 from schemas.contest import contest_schema, contests_schema
 from settings import config
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import joinedload, lazyload
 from utils.extensions import allowed_file
 from utils.validators import validate_url
-from sqlalchemy.orm import joinedload, Load
-from constants.limit import ROWS_PER_PAGE
 
 
 class ResourceContest(Resource):
@@ -23,7 +23,8 @@ class ResourceContest(Resource):
     def get(self):
         page = request.args.get("page", 1, type=int)
         contests = (
-            Contest.query.filter_by(admin=get_jwt_identity())
+            Contest.query.options(lazyload("submissions"))
+            .filter_by(admin=get_jwt_identity())
             .order_by(Contest.id.desc())
             .paginate(page=page, per_page=ROWS_PER_PAGE)
             .items
@@ -75,7 +76,11 @@ class ResourceContest(Resource):
 
 class ResourceContestDetail(Resource):
     def get(self, contest_url):
-        contest = Contest.query.filter_by(url=contest_url).options(joinedload(Contest.submissions, innerjoin=True)).first_or_404()
+        contest = (
+            Contest.query.filter_by(url=contest_url)
+            .options(joinedload(Contest.submissions, innerjoin=True))
+            .first_or_404()
+        )
         print(contest.__dict__)
 
         return contest_schema.dump(contest)
@@ -163,11 +168,15 @@ class ResourceContestDetail(Resource):
 class ResourceBannerImageContest(Resource):
     def get(self, url_contest):
         contest = Contest.query.filter_by(url=url_contest).first_or_404()
-        route = os.path.join(config.BANNER_FOLDER_PATH, f"{contest.id}.{contest.image_type}")
+        route = os.path.join(
+            config.BANNER_FOLDER_PATH, f"{contest.id}.{contest.image_type}"
+        )
+
         def generate():
             with open(route, "rb") as fwav:
                 data = fwav.read(1024)
                 while data:
                     yield data
                     data = fwav.read(1024)
+
         return Response(generate(), mimetype=MAPPER_IMAGE_FILE[contest.image_type])
