@@ -53,7 +53,6 @@ def process_audio_files():
 
     if pending_submissions:
         for (submission,user) in pending_submissions:
-            print(submission, user)
             filename = "{id}.{file_type}".format(id=submission.id, file_type=submission.file_type)
             try:
                 convert_to_mp3(filename)
