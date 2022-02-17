@@ -13,7 +13,7 @@ from models.model import db
 from schemas.contest import contest_schema, contests_schema
 from settings import config
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload, lazyload
+from sqlalchemy.orm import joinedload, noload
 from utils.extensions import allowed_file
 from utils.validators import validate_url
 
@@ -23,7 +23,7 @@ class ResourceContest(Resource):
     def get(self):
         page = request.args.get("page", 1, type=int)
         contests = (
-            Contest.query.options(lazyload("submissions"))
+            Contest.query.options(noload("*"))
             .filter_by(admin=get_jwt_identity())
             .order_by(Contest.id.desc())
             .paginate(page=page, per_page=ROWS_PER_PAGE)
