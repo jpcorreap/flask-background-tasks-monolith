@@ -1,6 +1,17 @@
-import { AppBar, Button, Link, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Button,
+  Link as MaterialLink,
+  Toolbar,
+  Typography,
+} from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const NavBar = () => {
+  const { email, signout } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="static"
@@ -17,19 +28,34 @@ const NavBar = () => {
         >
           SuperVoices
         </Typography>
-        <nav>
-          <Link
-            variant="button"
-            color="text.primary"
-            href="/signup"
+        {!email ? (
+          <nav>
+            <MaterialLink
+              variant="button"
+              color="text.primary"
+              sx={{ my: 1, mx: 1.5 }}
+            >
+              <Link to="/signup">Sign up</Link>
+            </MaterialLink>
+          </nav>
+        ) : (
+          <p>{email}</p>
+        )}
+        {email ? (
+          <Button
+            variant="outlined"
             sx={{ my: 1, mx: 1.5 }}
+            onClick={() => signout(() => navigate("/"))}
           >
-            Sign up
+            Sign out
+          </Button>
+        ) : (
+          <Link to="/login" style={{ textDecoration: "none" }}>
+            <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+              {!email ? "Login" : "Sign out"}
+            </Button>
           </Link>
-        </nav>
-        <Button href="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-          Login
-        </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

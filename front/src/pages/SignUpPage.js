@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -8,19 +8,39 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Copyright from "../components/Copyright";
+import { useAuth } from "../hooks/useAuth";
 
 export default function SignUpPage() {
+  const { jwt, signup } = useAuth();
+  const [data, setData] = useState({
+    names: "",
+    last_names: "",
+    email: "",
+    company_name: "",
+    password: "",
+    confirm_password: "",
+  });
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    console.info("CONECTANDO AL ENDPOINT");
+    console.table(data);
+    signup(data, () => {});
   };
+
+  const handleChange = (event) => {
+    setData((prevValue) => ({
+      ...prevValue,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  if (jwt) {
+    return <Navigate to="/" /*state={{ from: location }} */ replace />;
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -45,10 +65,12 @@ export default function SignUpPage() {
               <TextField
                 autoComplete="given-name"
                 name="names"
+                value={data.names}
                 required
                 fullWidth
                 id="names"
                 label="Name(s)"
+                onChange={handleChange}
                 autoFocus
               />
             </Grid>
@@ -57,8 +79,10 @@ export default function SignUpPage() {
                 required
                 fullWidth
                 id="last_names"
+                value={data.last_names}
                 label="Last name(s)"
                 name="last_names"
+                onChange={handleChange}
                 autoComplete="family-name"
               />
             </Grid>
@@ -67,8 +91,10 @@ export default function SignUpPage() {
                 required
                 fullWidth
                 id="email"
+                value={data.email}
                 label="Email address"
                 name="email"
+                onChange={handleChange}
                 autoComplete="email"
               />
             </Grid>
@@ -77,9 +103,10 @@ export default function SignUpPage() {
                 required
                 fullWidth
                 id="companyName"
+                value={data.company_name}
                 label="Company name"
-                name="email"
-                autoComplete="email"
+                name="company_name"
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -90,6 +117,8 @@ export default function SignUpPage() {
                 label="Password"
                 type="password"
                 id="password"
+                value={data.password}
+                onChange={handleChange}
                 autoComplete="new-password"
               />
             </Grid>
@@ -99,7 +128,9 @@ export default function SignUpPage() {
                 fullWidth
                 name="confirm_password"
                 label="Confirm password"
+                value={data.confirm_password}
                 type="password"
+                onChange={handleChange}
                 id="confirm_password"
               />
             </Grid>

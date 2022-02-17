@@ -18,7 +18,7 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import EventDetail from "./EventDetail";
+import ContestDetail from "../components/ContestDetail";
 
 function ContestsPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -26,7 +26,15 @@ function ContestsPage() {
     get: () => {},
     delete: () => {},
   };
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState([
+    {
+      id: 1,
+      url: "https:alguna_cosa",
+      name: "Mi Concurso",
+      image: "ruta imagen",
+    },
+  ]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("read_only");
@@ -34,33 +42,9 @@ function ContestsPage() {
 
   const handleRefresh = useCallback(() => {
     setIsLoading(true);
-    fetchRequests
-      .get("/events")
-      .then((response) => {
-        if (response.status === 401) alert("401");
-        else return response.json();
-      })
-      .then((data) => {
-        setIsLoading(false);
-        setRows(data);
-      });
-  }, [fetchRequests]);
+  }, []);
 
-  const deleteEvent = useCallback(
-    (event_id) => {
-      fetchRequests
-        .delete("/events/" + event_id, {})
-        .then((response) => {
-          if (response.status === 401) {
-            alert("401");
-          } else if (response.status === 200) {
-            handleRefresh();
-          }
-        })
-        .catch((e) => alert(e));
-    },
-    [fetchRequests, handleRefresh]
-  );
+  const deleteEvent = useCallback((event_id) => {}, []);
 
   const onClick = useCallback(
     (action, id) => {
@@ -88,36 +72,24 @@ function ContestsPage() {
   const columns = useMemo(
     () => [
       {
+        field: "id",
+        headerName: "Contest ID",
+      },
+      {
+        field: "url",
+        headerName: "Contest URL",
+      },
+      {
         field: "name",
-        headerName: "Nombre",
+        headerName: "Contest Name",
       },
       {
-        field: "modality",
-        headerName: "Modalidad",
-      },
-      {
-        field: "address",
-        headerName: "Dirección",
-      },
-      {
-        field: "place",
-        headerName: "Lugar",
-      },
-      {
-        field: "category",
-        headerName: "Categoría",
-      },
-      {
-        field: "start",
-        headerName: "Fecha inicio",
-      },
-      {
-        field: "end",
-        headerName: "Fecha fin",
+        field: "image",
+        headerName: "Contest Image",
       },
       {
         field: "actions",
-        headerName: "",
+        headerName: "Actions",
         onClick: onClick,
       },
     ],
@@ -126,16 +98,6 @@ function ContestsPage() {
 
   useEffect(() => {
     setIsLoading(true);
-    fetchRequests
-      .get("/events")
-      .then((response) => {
-        if (response.status === 401) {
-        } else return response.json();
-      })
-      .then((data) => {
-        setIsLoading(false);
-        setRows(data);
-      });
   }, [fetchRequests]);
 
   const handleChangePage = (event, newPage) => {
@@ -143,50 +105,55 @@ function ContestsPage() {
     setCurrentPage(newPage);
   };
 
-  const createRow = useCallback((row) => {
-    return (
-      <TableRow hover={true} role="checkbox" tabIndex={-1} key={row.code}>
-        {columns.map((column) => {
-          const value = row[column.field];
+  const createRow = useCallback(
+    (row) => {
+      return (
+        <TableRow hover={true} role="checkbox" tabIndex={-1} key={row.code}>
+          {columns.map((column) => {
+            const value = row[column.field];
 
-          return (
-            <TableCell>
-              <Grid
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                {column.onClick ? (
-                  <>
-                    <Tooltip title="Ver evento">
-                      <IconButton onClick={() => onClick("read_only", row.id)}>
-                        <VisibilityIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Editar evento">
-                      <IconButton onClick={() => onClick("edit", row.id)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Eliminar evento">
-                      <IconButton onClick={() => onClick("delete", row.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </>
-                ) : (
-                  <p>
-                    {column.valueParser ? column.valueParser(value) : value}
-                  </p>
-                )}
-              </Grid>
-            </TableCell>
-          );
-        })}
-      </TableRow>
-    );
-  }, []);
+            return (
+              <TableCell>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  {column.onClick ? (
+                    <>
+                      <Tooltip title="Ver evento">
+                        <IconButton
+                          onClick={() => onClick("read_only", row.id)}
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Editar evento">
+                        <IconButton onClick={() => onClick("edit", row.id)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar evento">
+                        <IconButton onClick={() => onClick("delete", row.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </>
+                  ) : (
+                    <p>
+                      {column.valueParser ? column.valueParser(value) : value}
+                    </p>
+                  )}
+                </Grid>
+              </TableCell>
+            );
+          })}
+        </TableRow>
+      );
+    },
+    [columns, onClick]
+  );
 
   return (
     <div>
@@ -257,7 +224,7 @@ function ContestsPage() {
             startIcon={<AddCircleIcon />}
             onClick={handleNewEvent}
           >
-            Crear un evento nuevo
+            Create a new contest
           </Button>
           <TablePagination
             rowsPerPageOptions={[]}
@@ -278,7 +245,7 @@ function ContestsPage() {
           />
         </Paper>
       </div>
-      <EventDetail
+      <ContestDetail
         mode={modalMode}
         event_id={modalDetailId}
         open={showModal}

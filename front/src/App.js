@@ -6,6 +6,8 @@ import { AuthProvider } from "./components/AuthProvider";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import LandingPage from "./pages/LandingPage";
+import RequireAuth from "./layouts/RequireAuth";
+import ContestsPage from "./pages/ContestsPage";
 
 function App() {
   return (
@@ -15,34 +17,51 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
-          path="/protected"
+          path="/contests/:contestId"
           element={
             <AdminLayout>
-              <h3>Protected</h3>
+              <Contest />
             </AdminLayout>
           }
         />
+        <Route
+          path="/contests/:contestId/submit"
+          element={
+            <AdminLayout>
+              <p>Submit contest</p>
+              <Contest />
+            </AdminLayout>
+          }
+        />
+        {/* Route for contests CRUD requires to be signed in */}
         <Route
           path="/contests/"
           element={
-            <AdminLayout>
-              <Contest />
-            </AdminLayout>
+            <RequireAuth>
+              <AdminLayout>
+                <ContestsPage />
+              </AdminLayout>
+            </RequireAuth>
           }
         />
+        {/* Edit a contest also requires to be signed in */}
         <Route
-          path="/contest/:contestId"
+          path="/contests/:contestId/edit"
           element={
-            <AdminLayout>
-              <Contest />
-            </AdminLayout>
+            <RequireAuth>
+              <AdminLayout>
+                <p>Edit contest</p>
+                <Contest />
+              </AdminLayout>
+            </RequireAuth>
           }
         />
+        {/* Generic fallback for unknown routes */}
         <Route
           path="*"
           element={
             <main style={{ padding: "1rem" }}>
-              <p>404 not found</p>
+              <h1>404 not found</h1>
               <Link to={"/"}>Go to home</Link>
             </main>
           }

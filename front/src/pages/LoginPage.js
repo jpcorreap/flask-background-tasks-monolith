@@ -1,12 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import { Link as MaterialLink } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -14,22 +11,31 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Copyright from "../components/Copyright";
+import { useState } from "react";
 
 export default function LoginPage() {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (event) => {
+    setData((prevValue) => ({
+      ...prevValue,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
 
   let from = location.state?.from?.pathname || "/";
 
-  function handleSubmit(event) {
-    event.preventDefault();
-
-    let formData = new FormData(event.currentTarget);
-    let username = formData.get("username");
+  function handleSubmit() {
     // tomarlo de la variable de estado
 
-    auth.signin(username, () => {
+    auth.signin(data.email, () => {
       // Send them back to the page they tried to visit when they were
       // redirected to the login page. Use { replace: true } so we don't create
       // another entry in the history stack for the login page.  This means that
@@ -37,13 +43,6 @@ export default function LoginPage() {
       // won't end up back on the login page, which is also really nice for the
       // user experience.
       navigate(from, { replace: true });
-    });
-
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
     });
   }
 
@@ -82,12 +81,7 @@ export default function LoginPage() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 1 }}
-          >
+          <Box noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <p>You must log in to view the page at {from}</p>
             <TextField
               margin="normal"
@@ -97,6 +91,8 @@ export default function LoginPage() {
               label="Email address"
               name="email"
               autoComplete="email"
+              value={data.email}
+              onChange={handleChange}
               autoFocus
             />
             <TextField
@@ -107,6 +103,7 @@ export default function LoginPage() {
               label="Password"
               type="password"
               id="password"
+              onChange={handleChange}
               autoComplete="current-password"
             />
             <Button
