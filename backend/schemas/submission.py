@@ -1,8 +1,10 @@
+from models.submission import Submission
 from schemas.schema import ma
 
 
 class SubmissionSchema(ma.Schema):
     class Meta:
+        model = Submission
         fields = (
             "id",
             "user_id",

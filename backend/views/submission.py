@@ -1,10 +1,12 @@
 from datetime import datetime
 import os
 import uuid
+
+from constants.extensions import MAPPER_AUDIO_FILE
+from constants.limit import ROWS_PER_PAGE
 from flask import Response, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
-from constants.extensions import MAPPER_AUDIO_FILE
 from models.contest import Contest
 from models.model import db
 from models.submission import Submission, SubmissionStatus
@@ -14,8 +16,6 @@ from settings import config
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
 
-from constants.limit import ROWS_PER_PAGE
-
 
 class ResourceSubmission(Resource):
     @jwt_required(optional=True)
@@ -23,17 +23,13 @@ class ResourceSubmission(Resource):
         page = request.args.get("page", 1, type=int)
         contest = Contest.query.filter_by(url=contest_url).first_or_404()
         if get_jwt_identity():
-            submissions = (
-                Submission.query.filter_by(contest_id=contest.id)
-                .order_by(Submission.upload_date.desc())
-                
+            submissions = Submission.query.filter_by(contest_id=contest.id).order_by(
+                Submission.upload_date.desc()
             )
         else:
-            submissions = (
-                Submission.query.filter_by(contest_id=contest.id, status="converted")
-                .order_by(Submission.upload_date.desc())
-                
-            )
+            submissions = Submission.query.filter_by(
+                contest_id=contest.id, status="converted"
+            ).order_by(Submission.upload_date.desc())
         return submissions_schema.dump(
             submissions.paginate(page=page, per_page=ROWS_PER_PAGE).items
         )
@@ -98,13 +94,29 @@ class ResourceSubmissionDetail(Resource):
 
 
 class ResourceAudioSubmission(Resource):
+    @jwt_required(optional=True)
     def get(self, id):
         submission = Submission.query.filter_by(id=id).first_or_404()
-        route = os.path.join(config.PROCESSED_FOLDER_PATH, f"{submission.id}.{submission.file_type}") if  submission.status == SubmissionStatus.converted else os.path.join(config.PROCESSING_FOLDER_PATH, f"{submission.id}.{submission.file_type}")
+        if submission.status == SubmissionStatus.processing and not get_jwt_identity():
+            return Response(status=401)
+        route = (
+            os.path.join(config.PROCESSED_FOLDER_PATH, f"{submission.id}.mp3")
+            if submission.status == SubmissionStatus.converted
+            else os.path.join(
+                config.PROCESSING_FOLDER_PATH, f"{submission.id}.{submission.file_type}"
+            )
+        )
+
         def generate():
             with open(route, "rb") as fwav:
                 data = fwav.read(1024)
                 while data:
                     yield data
                     data = fwav.read(1024)
-        return Response(generate(), mimetype=MAPPER_AUDIO_FILE[submission.file_type])
+
+        return Response(
+            generate(),
+            mimetype=MAPPER_AUDIO_FILE["mp3"]
+            if submission.status == SubmissionStatus.converted
+            else MAPPER_AUDIO_FILE[submission.file_type],
+        )

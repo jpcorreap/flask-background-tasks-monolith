@@ -35,8 +35,6 @@ api.add_resource(
 api.add_resource(ResourceAudioSubmission, "/api/submissions/<string:id>")
 api.add_resource(ResourceBannerImageContest,"/api/contests/banner/<string:url_contest>")
 
-
-
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
