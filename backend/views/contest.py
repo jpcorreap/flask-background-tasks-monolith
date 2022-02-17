@@ -14,7 +14,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from utils.extensions import allowed_file
 from utils.validators import validate_url
 
-from backend.constants.limit import ROWS_PER_PAGE
+from constants.limit import ROWS_PER_PAGE
 
 
 class ResourceContest(Resource):
@@ -24,7 +24,6 @@ class ResourceContest(Resource):
         contests = (
             Contest.query.filter_by(admin=get_jwt_identity())
             .order_by(Contest.id.desc())
-            .all()
             .paginate(page=page, per_page=ROWS_PER_PAGE)
             .items
         )
