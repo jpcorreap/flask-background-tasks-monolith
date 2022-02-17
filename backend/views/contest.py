@@ -81,7 +81,6 @@ class ResourceContestDetail(Resource):
             .options(joinedload(Contest.submissions, innerjoin=True))
             .first_or_404()
         )
-        print(contest.__dict__)
 
         return contest_schema.dump(contest)
 
