@@ -28,31 +28,39 @@ const NavBar = () => {
         >
           SuperVoices
         </Typography>
-        {!email ? (
+        {email ? (
+          <p>{email}</p>
+        ) : (
           <nav>
             <MaterialLink
               variant="button"
               color="text.primary"
               sx={{ my: 1, mx: 1.5 }}
             >
-              <Link to="/signup">Sign up</Link>
+              <Link to="/login">Login</Link>
             </MaterialLink>
           </nav>
-        ) : (
-          <p>{email}</p>
         )}
         {email ? (
-          <Button
-            variant="outlined"
-            sx={{ my: 1, mx: 1.5 }}
-            onClick={() => signout(() => navigate("/"))}
-          >
-            Sign out
-          </Button>
+          <>
+            {" "}
+            <Button
+              variant="outlined"
+              sx={{ my: 1, mx: 1.5 }}
+              onClick={() => signout(() => navigate("/"))}
+            >
+              Sign out
+            </Button>
+            <Link to="/contests" style={{ textDecoration: "none" }}>
+              <Button variant="contained" sx={{ my: 1, mx: 1.5 }}>
+                View contests
+              </Button>
+            </Link>
+          </>
         ) : (
-          <Link to="/login" style={{ textDecoration: "none" }}>
-            <Button variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-              {!email ? "Login" : "Sign out"}
+          <Link to="/signup" style={{ textDecoration: "none" }}>
+            <Button variant="contained" sx={{ my: 1, mx: 1.5 }}>
+              Sign up
             </Button>
           </Link>
         )}

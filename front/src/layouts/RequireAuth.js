@@ -14,11 +14,5 @@ export default function RequireAuth({ children }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return (
-    <Grid>
-      <h1>This is a protected route!</h1>
-      <p>{jwt}</p>
-      {children}
-    </Grid>
-  );
+  return <Grid>{children}</Grid>;
 }

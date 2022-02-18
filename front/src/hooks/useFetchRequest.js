@@ -5,21 +5,24 @@ const fetch_url =
   process.env.NODE_ENV === "production" ? "" : process.env.REACT_APP_FETCH_URL;
 
 export default function useFetchRequest() {
-  const { token } = useAuth();
+  const { jwt } = useAuth();
 
   const _getHeaders = useCallback(async () => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    if (token) headers.append("Authorization", `Bearer ${token}`);
+    if (jwt) headers.append("Authorization", `Bearer ${jwt}`);
     return headers;
-  }, [token]);
+  }, [jwt]);
 
   return useMemo(
     () => ({
       async get(path) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, { headers, method: "GET" }).then((res) =>
-          res.json()
+        return fetch(fetch_url + path, { headers, method: "GET" }).then(
+          (res) => {
+            console.info({ res });
+            return res.json();
+          }
         );
       },
 
@@ -29,7 +32,10 @@ export default function useFetchRequest() {
           headers,
           method: "PATCH",
           body: JSON.stringify(body),
-        }).then((res) => res.json());
+        }).then((res) => {
+          console.info({ Response: res });
+          return res.json();
+        });
       },
 
       async post(path, body) {
@@ -38,7 +44,11 @@ export default function useFetchRequest() {
           headers,
           method: "POST",
           body: JSON.stringify(body),
-        }).then((res) => res.json());
+        }).then((res) => {
+          console.info({ Response: res });
+          console.info({ Response: res.status });
+          return res.json();
+        });
       },
 
       async put(path, body) {
@@ -47,7 +57,10 @@ export default function useFetchRequest() {
           headers,
           method: "PUT",
           body: JSON.stringify(body),
-        }).then((res) => res.json());
+        }).then((res) => {
+          console.info({ res });
+          return res.json();
+        });
       },
 
       async delete(path, body) {
@@ -56,7 +69,10 @@ export default function useFetchRequest() {
           headers,
           method: "DELETE",
           body: JSON.stringify(body),
-        }).then((res) => res.json());
+        }).then((res) => {
+          console.info({ res });
+          return res.json();
+        });
       },
     }),
     [_getHeaders]

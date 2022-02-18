@@ -17,31 +17,31 @@ import {
   TablePagination,
   TableRow,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import ContestDetail from "../components/ContestDetail";
+import { useContestsService } from "../services/useContestsService";
+import { Link } from "react-router-dom";
 
 function ContestsPage() {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchRequests = {
-    get: () => {},
-    delete: () => {},
-  };
-  const [rows, setRows] = useState([
-    {
-      id: 1,
-      url: "https:alguna_cosa",
-      name: "Mi Concurso",
-      image: "ruta imagen",
-    },
-  ]);
-
+  const { getContests } = useContestsService();
+  const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("read_only");
+  const [modalMode, setModalMode] = useState("edit");
   const [modalDetailId, setModalDetailId] = useState();
+
+  useEffect(() => {
+    getContests(
+      (contests) => setRows(contests),
+      (error) => setError(error)
+    );
+  }, []);
 
   const handleRefresh = useCallback(() => {
     setIsLoading(true);
+    getContests();
   }, []);
 
   const deleteEvent = useCallback((event_id) => {}, []);
@@ -49,11 +49,7 @@ function ContestsPage() {
   const onClick = useCallback(
     (action, id) => {
       if (action === "delete") deleteEvent(id);
-      else if (action === "read_only") {
-        setModalDetailId(id);
-        setShowModal(true);
-        setModalMode("read_only");
-      } else {
+      else {
         setModalDetailId(id);
         setModalMode("edit");
         setShowModal(true);
@@ -69,6 +65,7 @@ function ContestsPage() {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [pagination, setPagination] = useState([0, 7]);
+
   const columns = useMemo(
     () => [
       {
@@ -84,8 +81,16 @@ function ContestsPage() {
         headerName: "Contest Name",
       },
       {
-        field: "image",
-        headerName: "Contest Image",
+        field: "prize",
+        headerName: "Contest Prize",
+      },
+      {
+        field: "start_date",
+        headerName: "Contest Start Date",
+      },
+      {
+        field: "end_date",
+        headerName: "Contest End Date",
       },
       {
         field: "actions",
@@ -95,10 +100,6 @@ function ContestsPage() {
     ],
     [onClick]
   );
-
-  useEffect(() => {
-    setIsLoading(true);
-  }, [fetchRequests]);
 
   const handleChangePage = (event, newPage) => {
     setPagination([newPage * 7, (newPage + 1) * 7]);
@@ -122,19 +123,19 @@ function ContestsPage() {
                 >
                   {column.onClick ? (
                     <>
-                      <Tooltip title="Ver evento">
-                        <IconButton
-                          onClick={() => onClick("read_only", row.id)}
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
+                      <Tooltip title="Go to contest page">
+                        <Link to={`/contests/${row.url}`}>
+                          <IconButton>
+                            <VisibilityIcon />
+                          </IconButton>
+                        </Link>
                       </Tooltip>
-                      <Tooltip title="Editar evento">
+                      <Tooltip title="Edit contest">
                         <IconButton onClick={() => onClick("edit", row.id)}>
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title="Eliminar evento">
+                      <Tooltip title="Delete contest">
                         <IconButton onClick={() => onClick("delete", row.id)}>
                           <DeleteIcon />
                         </IconButton>
@@ -158,6 +159,8 @@ function ContestsPage() {
   return (
     <div>
       <div style={{ margin: 20 }}>
+        <Typography variant={"h6"}>Contests</Typography>
+
         <Paper
           style={{
             width: "100%",
@@ -197,14 +200,14 @@ function ContestsPage() {
                   ) : (
                     <TableRow hover={true} role="checkbox" tabIndex={-1}>
                       <TableCell colSpan={8}>
-                        <p>No se encontraron resultados</p>
+                        <p>No data</p>
                       </TableCell>
                     </TableRow>
                   )
                 ) : (
                   <TableRow hover={true} role="checkbox" tabIndex={-1}>
                     <TableCell colSpan={8}>
-                      <p>Cargando...</p>
+                      <p>Loading...</p>
                     </TableCell>
                   </TableRow>
                 )}
@@ -236,9 +239,7 @@ function ContestsPage() {
             page={currentPage}
             onPageChange={handleChangePage}
             labelDisplayedRows={({ from, to, count, page }) =>
-              `Página ${
-                page + 1
-              }: mostrando de ${from} a ${to} registros de un total de ${
+              `Page ${page + 1}: displaying from ${from} to ${to} registers ${
                 count !== -1 ? count : 0
               }`
             }

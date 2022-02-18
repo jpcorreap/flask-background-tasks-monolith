@@ -4,7 +4,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import { Link as MaterialLink } from "@mui/material";
+import { Alert, Link as MaterialLink } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -12,6 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Copyright from "../components/Copyright";
 import { useState } from "react";
+import { isValidEmail } from "../utils/regExpUtils";
 
 export default function LoginPage() {
   const [data, setData] = useState({
@@ -26,6 +27,8 @@ export default function LoginPage() {
     }));
   };
 
+  const [error, setError] = useState("");
+
   let navigate = useNavigate();
   let location = useLocation();
   let auth = useAuth();
@@ -33,17 +36,26 @@ export default function LoginPage() {
   let from = location.state?.from?.pathname || "/";
 
   function handleSubmit() {
-    // tomarlo de la variable de estado
-
-    auth.signin(data.email, () => {
-      // Send them back to the page they tried to visit when they were
-      // redirected to the login page. Use { replace: true } so we don't create
-      // another entry in the history stack for the login page.  This means that
-      // when they get to the protected page and click the back button, they
-      // won't end up back on the login page, which is also really nice for the
-      // user experience.
-      navigate(from, { replace: true });
-    });
+    setError(null);
+    if (!isValidEmail(data.email)) {
+      setError("Please enter a valid email");
+    } else {
+      auth.signin(
+        data,
+        () => {
+          // Send them back to the page they tried to visit when they were
+          // redirected to the login page. Use { replace: true } so we don't create
+          // another entry in the history stack for the login page.  This means that
+          // when they get to the protected page and click the back button, they
+          // won't end up back on the login page, which is also really nice for the
+          // user experience.
+          navigate(from, { replace: true });
+        },
+        () => {
+          setError("Invalid email or password");
+        }
+      );
+    }
   }
 
   return (
@@ -75,11 +87,11 @@ export default function LoginPage() {
             alignItems: "center",
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Login
           </Typography>
           <Box noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <p>You must log in to view the page at {from}</p>
@@ -120,6 +132,8 @@ export default function LoginPage() {
                 <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
               </Grid>
             </Grid>
+            <div style={{ height: "30px" }}></div>
+            {error ? <Alert severity="error">{error}</Alert> : <></>}
             <Copyright sx={{ mt: 5 }} />
           </Box>
         </Box>

@@ -11,6 +11,7 @@ import Container from "@mui/material/Container";
 import { Link, Navigate } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import { useAuth } from "../hooks/useAuth";
+import { Alert } from "@mui/material";
 
 export default function SignUpPage() {
   const { jwt, signup } = useAuth();
@@ -22,13 +23,21 @@ export default function SignUpPage() {
     password: "",
     confirm_password: "",
   });
+  const [error, setError] = useState(false);
+  const [displaySuccess, setDisplaySuccess] = useState(false);
 
   const handleSubmit = (event) => {
+    setError(undefined);
+    setDisplaySuccess(false);
     event.preventDefault();
     // eslint-disable-next-line no-console
     console.info("CONECTANDO AL ENDPOINT");
     console.table(data);
-    signup(data, () => {});
+    signup(
+      data,
+      () => setDisplaySuccess(true),
+      (error) => setError(error)
+    );
   };
 
   const handleChange = (event) => {
@@ -139,6 +148,7 @@ export default function SignUpPage() {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={displaySuccess}
             sx={{ mt: 3, mb: 2 }}
           >
             Sign Up
@@ -149,6 +159,21 @@ export default function SignUpPage() {
             </Grid>
           </Grid>
         </Box>
+        <div style={{ height: "30px" }}></div>
+        {error ? (
+          <Alert severity="error">
+            Error creating the account, please try with new credentials
+          </Alert>
+        ) : (
+          <></>
+        )}
+        {displaySuccess ? (
+          <Alert severity="success">
+            Account created successfully! Sign in automatically 5 seconds...
+          </Alert>
+        ) : (
+          <></>
+        )}
       </Box>
       <Copyright sx={{ mt: 5 }} />
     </Container>

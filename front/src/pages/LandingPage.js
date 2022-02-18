@@ -11,7 +11,6 @@ import {
   Button,
 } from "@mui/material";
 import { GlobalStyles } from "@mui/styled-engine";
-import { Link } from "react-router-dom";
 import landingImage from "../assets/img/landing.png";
 import StarIcon from "@mui/icons-material/StarBorder";
 import Footer from "../components/Footer";
@@ -66,28 +65,27 @@ const LandingPage = () => {
       />
       <CssBaseline />
       <NavBar />
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={6}>
+
+      <Grid
+        container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Grid item xs={12} sm={6}>
           <div style={{ padding: 30 }}>
             <Typography variant={"h3"}>
-              <span style={{ fontWeight: "bolder" }}>SuperVoices...</span> Get
-              the perfect voice over for your needs!
+              <span style={{ fontWeight: "bolder" }}>SuperVoices</span> helps
+              you to get a perfect voice over for all your needs!
             </Typography>
-            <h1>Demo links:</h1>
-            <ul>
-              <li>
-                <Link to="/signup">Sign up</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/protected">Demo protected page</Link>
-              </li>
-            </ul>
           </div>
         </Grid>
-        <Grid item xs={6}>
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          style={{ maxWidth: 550, backgroundColor: "red" }}
+        >
           <CardMedia
             component="img"
             image={landingImage}
