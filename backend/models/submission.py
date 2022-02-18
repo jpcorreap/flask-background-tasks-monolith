@@ -27,8 +27,7 @@ class Submission(db.Model):
     contest_id = db.Column(
         UUID(as_uuid=True),
         db.ForeignKey("contest.id"),
-        nullable=False,
-        default=uuid.uuid4,
+        nullable=False
     )
     upload_date = db.Column(db.DateTime, nullable=False)
     file_type = db.Column(db.Enum(SubmissionFileType), nullable=False)
