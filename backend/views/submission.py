@@ -123,7 +123,6 @@ class ResourceAudioSubmission(Resource):
 
 
 class ResourceAudioSubmissionRaw(Resource):
-    @jwt_required()
     def get(self, id):
         submission = Submission.query.filter_by(id=id).first_or_404()
         route = os.path.join(
