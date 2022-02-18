@@ -120,3 +120,24 @@ class ResourceAudioSubmission(Resource):
             if submission.status == SubmissionStatus.converted
             else MAPPER_AUDIO_FILE[submission.file_type],
         )
+
+
+class ResourceAudioSubmissionRaw(Resource):
+    @jwt_required()
+    def get(self, id):
+        submission = Submission.query.filter_by(id=id).first_or_404()
+        route = os.path.join(
+            config.PROCESSING_FOLDER_PATH, f"{submission.id}.{submission.file_type}"
+        )
+
+        def generate():
+            with open(route, "rb") as fwav:
+                data = fwav.read(1024)
+                while data:
+                    yield data
+                    data = fwav.read(1024)
+
+        return Response(
+            generate(),
+            mimetype=MAPPER_AUDIO_FILE[submission.file_type],
+        )

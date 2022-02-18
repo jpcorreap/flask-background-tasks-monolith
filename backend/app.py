@@ -13,6 +13,7 @@ from views.contest import (
 )
 from views.submission import (
     ResourceAudioSubmission,
+    ResourceAudioSubmissionRaw,
     ResourceSubmission,
     ResourceSubmissionDetail,
 )
@@ -41,6 +42,7 @@ api.add_resource(
     "/api/contests/<string:contest_url>/submissions/<string:id_submission>",
 )
 api.add_resource(ResourceAudioSubmission, "/api/submissions/<string:id>")
+api.add_resource(ResourceAudioSubmissionRaw, "/api/submissions/raw/<string:id>")
 api.add_resource(
     ResourceBannerImageContest, "/api/contests/banner/<string:url_contest>"
 )
