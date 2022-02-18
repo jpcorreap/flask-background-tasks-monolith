@@ -134,3 +134,7 @@ venv
 # Pyre type checker
 .pyre/
 front/yarn.lock
+
+#Media folders
+converter/
+img/

@@ -12,7 +12,7 @@ class Contest(db.Model):
     image_type = db.Column(db.String(16), nullable=False)
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=False)
-    submissions = db.relationship("Submission",backref='contest', cascade="all, delete-orphan")
+    submissions = db.relationship("Submission",back_populates='' ,cascade="all, delete-orphan",lazy='dynamic')
     prize = db.Column(db.Float, nullable=False)
     script = db.Column(db.String(256), nullable=False)
     advices = db.Column(db.String(256), nullable=False)

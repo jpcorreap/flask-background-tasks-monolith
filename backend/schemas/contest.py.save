@@ -1,12 +1,8 @@
-from marshmallow import fields
-from models.contest import Contest
 from schemas.schema import ma
-from schemas.submission import SubmissionSchema
 
 
 class ContestSchema(ma.Schema):
     class Meta:
-        model = Contest
         fields = (
             "id",
             "url",
@@ -18,11 +14,26 @@ class ContestSchema(ma.Schema):
             "script",
             "advices",
             "admin",
-            "submissions",
         )
 
-    submissions = fields.List(fields.Nested(SubmissionSchema, required=True))
+
+class ContestSchemaDetail(ma.Schema):
+    
+class Meta:
+        fields = (
+            "id",
+            "url",
+            "name",
+            "image_type",
+            "start_date",
+            "end_date",
+            "prize",
+            "script",
+            "advices",
+            "admin",
+        )
 
 
-contest_schema = ContestSchema()
+
+contest_schema = ContestSchemaDetail()
 contests_schema = ContestSchema(many=True)
