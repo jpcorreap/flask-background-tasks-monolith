@@ -6,9 +6,17 @@ from flask_restful import Api
 from models.model import db
 from schemas.schema import ma
 from settings import config
-from views.contest import ResourceBannerImageContest, ResourceContest, ResourceContestDetail
-from views.submission import ResourceAudioSubmission, ResourceSubmission, ResourceSubmissionDetail
-from views.user import SignIn, SignUp
+from views.contest import (
+    ResourceBannerImageContest,
+    ResourceContest,
+    ResourceContestDetail,
+)
+from views.submission import (
+    ResourceAudioSubmission,
+    ResourceSubmission,
+    ResourceSubmissionDetail,
+)
+from views.user import SignIn, SignUp, UserDetail
 
 # app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
 app = Flask(__name__)
@@ -33,9 +41,13 @@ api.add_resource(
     "/api/contests/<string:contest_url>/submissions/<string:id_submission>",
 )
 api.add_resource(ResourceAudioSubmission, "/api/submissions/<string:id>")
-api.add_resource(ResourceBannerImageContest,"/api/contests/banner/<string:url_contest>")
+api.add_resource(
+    ResourceBannerImageContest, "/api/contests/banner/<string:url_contest>"
+)
+api.add_resource(UserDetail, "/api/users/<int:user_id>")
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
 def catch_all(path):
     return app.send_static_file("index.html")
