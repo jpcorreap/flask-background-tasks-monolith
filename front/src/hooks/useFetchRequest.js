@@ -26,6 +26,13 @@ export default function useFetchRequest() {
         );
       },
 
+      async getMedia(path) {
+        const headers = await _getHeaders();
+        return fetch(fetch_url + path, { headers, method: "GET" }).then((res) =>
+          res.blob()
+        );
+      },
+
       async patch(path, body) {
         const headers = await _getHeaders();
         return fetch(fetch_url + path, {

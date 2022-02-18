@@ -44,7 +44,6 @@ export function AuthProvider({ children }) {
         }, 5000);
       })
       .catch((error) => {
-        console.info("Erroor", { error });
         onFailure(error);
       });
   };
@@ -64,7 +63,6 @@ export function AuthProvider({ children }) {
         }
       })
       .catch((error) => {
-        console.info("Erroor", { error });
         onFailure(error);
       });
   };
