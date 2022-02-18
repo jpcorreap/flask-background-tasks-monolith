@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -10,7 +10,7 @@ export default function Contest() {
   const { getContestDetail, getBanner } = useContestService();
 
   const [isContestDetailLoading, setIsContestDetailLoading] = useState(true);
-  const [contestDetail, setContestDetail] = useState();
+  const [contest, setContest] = useState();
 
   const [isBannerLoading, setIsBannerLoading] = useState(true);
   const [banner, setBanner] = useState();
@@ -21,7 +21,7 @@ export default function Contest() {
     getContestDetail(
       contestId,
       (c) => {
-        setContestDetail(c);
+        setContest(c);
         setIsContestDetailLoading(false);
       },
       (error) => {
@@ -53,46 +53,17 @@ export default function Contest() {
         alignItems="center"
       >
         <img height={400} src={banner} alt={`Contest ${contestId}`} />
-        <h2>Contest {contestId}</h2>
+        <Typography variant={"h3"}>
+          <span style={{ fontWeight: "bolder" }}>Contest {contest.name}</span>
+        </Typography>
       </Grid>
       <Grid style={{ padding: 10 }}>
         <Grid item>
           <Box sx={{ flexGrow: 1 }} style={{ marginTop: 20 }}>
             <Grid container spacing={2}>
-              {[
-                {
-                  id: 1,
-                  name: "Voice 1",
-                  image: "ruta imagen",
-                },
-                {
-                  id: 2,
-                  name: "Voice 2",
-                  image: "ruta imagen",
-                },
-                {
-                  id: 3,
-                  name: "Voice 3",
-                  image: "ruta imagen",
-                },
-                {
-                  id: 4,
-                  name: "Voice 4",
-                  image: "ruta imagen",
-                },
-                {
-                  id: 5,
-                  name: "Voice 5",
-                  image: "ruta imagen",
-                },
-                {
-                  id: 6,
-                  name: "Voice 6",
-                  image: "ruta imagen",
-                },
-              ].map((voice, id) => (
+              {contest.submissions.map((submission, id) => (
                 <Grid container item xs={2}>
-                  <VoiceCard name={voice.name} />
+                  <VoiceCard submission={submission} />
                 </Grid>
               ))}
             </Grid>

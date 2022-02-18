@@ -1,4 +1,4 @@
-const dateFormatter = new Intl.DateTimeFormat("es-CO", {
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
@@ -44,6 +44,15 @@ export const parseStringToVeryShortDate = (dateAsString) => {
   }
   const date = new Date(dateAsString);
   return veryShortDateFormatter.format(date);
+};
+
+export const parseStringToDetailedDate = (dateAsString) => {
+  if (!dateAsString) {
+    return "-";
+  }
+  const date = new Date(dateAsString);
+
+  return dateFormatter.format(date);
 };
 
 export const dateToShortString = (date) => {
