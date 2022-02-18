@@ -1,8 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useAuth } from "./useAuth";
 
-const fetch_url =
-  process.env.NODE_ENV === "production" ? "" : process.env.REACT_APP_FETCH_URL;
+export const fetch_url = "http://172.24.41.21/api";
 
 export default function useFetchRequest() {
   const { jwt } = useAuth();
@@ -10,6 +9,12 @@ export default function useFetchRequest() {
   const _getHeaders = useCallback(async () => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
+    if (jwt) headers.append("Authorization", `Bearer ${jwt}`);
+    return headers;
+  }, [jwt]);
+
+  const _getHeadersMedia = useCallback(async () => {
+    const headers = new Headers();
     if (jwt) headers.append("Authorization", `Bearer ${jwt}`);
     return headers;
   }, [jwt]);
@@ -58,19 +63,32 @@ export default function useFetchRequest() {
         });
       },
 
-      async put(path, body) {
-        const headers = await _getHeaders();
+      async postMedia(path, formData) {
+        const headers = await _getHeadersMedia();
+        return fetch(fetch_url + path, {
+          headers,
+          method: "POST",
+          body: formData,
+        }).then((res) => {
+          console.info({ Response: res });
+          console.info({ Response: res.status });
+          return res.json();
+        });
+      },
+
+      async putMedia(path, formData) {
+        const headers = await _getHeadersMedia();
         return fetch(fetch_url + path, {
           headers,
           method: "PUT",
-          body: JSON.stringify(body),
+          body: formData,
         }).then((res) => {
           console.info({ res });
           return res.json();
         });
       },
 
-      async delete(path, body) {
+      async httpDelete(path, body) {
         const headers = await _getHeaders();
         return fetch(fetch_url + path, {
           headers,

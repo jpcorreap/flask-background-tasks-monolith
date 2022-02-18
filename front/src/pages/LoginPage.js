@@ -1,17 +1,17 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import { Alert, Link as MaterialLink } from "@mui/material";
+import { Alert } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Copyright from "../components/Copyright";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isValidEmail } from "../utils/regExpUtils";
 
 export default function LoginPage() {
@@ -19,6 +19,12 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
+  const [hasLoggedIn, setHasLoggedIn] = useState(false);
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const auth = useAuth();
 
   const handleChange = (event) => {
     setData((prevValue) => ({
@@ -27,11 +33,7 @@ export default function LoginPage() {
     }));
   };
 
-  const [error, setError] = useState("");
-
-  let navigate = useNavigate();
-  let location = useLocation();
-  let auth = useAuth();
+  useEffect(() => setHasLoggedIn(auth.validateLoggedAccount()), []);
 
   let from = location.state?.from?.pathname || "/";
 
@@ -56,6 +58,10 @@ export default function LoginPage() {
         }
       );
     }
+  }
+
+  if (hasLoggedIn) {
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
   return (

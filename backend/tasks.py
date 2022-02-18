@@ -1,10 +1,14 @@
+import os
 from celery import Celery
+from utils.db import db_session
 from custom_email.email_sender import send_many_emails
 import ffmpeg
+from models.admin import Admin
+from models.contest import Contest
 from models.submission import Submission, SubmissionStatus
-from models.user import User
+from models.user import User 
+
 from settings import config
-from utils.db import db_session
 
 app = Celery("tasks", broker="redis://localhost:6379/0")
 
@@ -79,7 +83,7 @@ def process_audio_files():
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs):
-    # Calls process_audio_files every 15 minutes.
+    # Calls process_audio_files every 5 minutes.
     sender.add_periodic_task(
-        900, process_audio_files.s(), name="Process Files every 15 minutes"
+        300, process_audio_files.s(), name="Process Files every 5 minutes"
     )

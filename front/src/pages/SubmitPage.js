@@ -2,20 +2,18 @@ import { Button, Grid, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import SubmissionForm from "../components/SubmissionForm";
 import VoiceCard from "../components/VoiceCard";
 import { useContestService } from "../services/useContestService";
 import { parseStringToDetailedDate } from "../utils/dateUtils";
 
-export default function ContestPage() {
+export default function SubmitPage() {
   const { contestId } = useParams();
   const { getContestDetail, getBanner } = useContestService();
-
   const [isContestDetailLoading, setIsContestDetailLoading] = useState(true);
   const [contest, setContest] = useState();
-
   const [isBannerLoading, setIsBannerLoading] = useState(true);
   const [banner, setBanner] = useState();
-
   const [error, setError] = useState();
 
   useEffect(() => {
@@ -70,7 +68,7 @@ export default function ContestPage() {
           }}
         >
           <span style={{ fontWeight: "bolder", color: "white" }}>
-            Contest {contest.name}
+            Submit to contest {contest.name}
           </span>
         </p>
 
@@ -98,26 +96,18 @@ export default function ContestPage() {
             {contest.script}
           </p>
         </Grid>
-        {contest.prize ? (
-          <Link to={`submit`} style={{ textDecoration: "none" }}>
-            <Button variant="contained" color={"secondary"}>
-              Submit your voice!
-            </Button>
-          </Link>
-        ) : (
-          <p style={{ color: "white" }}>This contest does not exist</p>
-        )}
+        <Link to={`/contests/${contestId}`} style={{ textDecoration: "none" }}>
+          <Button variant="contained" color={"secondary"}>
+            Return to contest page
+          </Button>
+        </Link>
       </Grid>
       <Grid style={{ padding: 10 }} container xs={12} md={9}>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-            {contest.submissions?.map((submission, id) => (
-              <Grid container item xs={4}>
-                <VoiceCard submission={submission} />
-              </Grid>
-            ))}
-          </Grid>
-        </Box>
+        {contest.prize ? (
+          <SubmissionForm />
+        ) : (
+          <h1>Oops, this contest does not exist</h1>
+        )}
       </Grid>
     </Grid>
   );

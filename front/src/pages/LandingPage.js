@@ -80,12 +80,7 @@ const LandingPage = () => {
             </Typography>
           </div>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          style={{ maxWidth: 550, backgroundColor: "red" }}
-        >
+        <Grid item xs={12} sm={6} style={{ maxWidth: 550 }}>
           <CardMedia
             component="img"
             image={landingImage}

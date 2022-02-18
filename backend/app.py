@@ -19,8 +19,7 @@ from views.submission import (
 )
 from views.user import SignIn, SignUp, UserDetail
 
-# app = Flask(__name__, static_folder="../frontend/build", static_url_path="/")
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../front/build", static_url_path="/")
 app.config.from_object(config)
 
 db.init_app(app)
@@ -49,7 +48,18 @@ api.add_resource(
 api.add_resource(UserDetail, "/api/users/<int:user_id>")
 
 
-@app.route("/", defaults={"path": ""})
-@app.route("/<path:path>")
-def catch_all(path):
+@app.route("/")
+@app.route("/contests")
+@app.route("/login")
+@app.route("/signup")
+def serve():
+    return app.send_static_file("index.html")
+
+@app.route("/contests/<string:x>")
+def serve1(x):
+    return app.send_static_file("index.html")
+
+@app.route("/contests/<string:x>/submit")
+@app.route("/contests/<string:x>/edit")
+def serve2(x):
     return app.send_static_file("index.html")

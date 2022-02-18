@@ -21,46 +21,57 @@ import {
 } from "@mui/material";
 import ContestDetail from "../components/ContestDetail";
 import { useContestsService } from "../services/useContestsService";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+import { useContestService } from "../services/useContestService";
 
 function ContestsPage() {
-  const { getContests } = useContestsService();
+  const [hasLoggedIn, setHasLoggedIn] = useState(true);
   const [rows, setRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("edit");
   const [modalDetailId, setModalDetailId] = useState();
+  const { validateLoggedAccount } = useAuth();
+  const { getContests } = useContestsService();
+  const { deleteContest } = useContestService();
 
   useEffect(() => {
+    if (validateLoggedAccount()) {
+      getContests(
+        (contests) => setRows(contests),
+        (error) => setError(error)
+      );
+    } else {
+      setHasLoggedIn(false);
+    }
+  }, [getContests, validateLoggedAccount]);
+
+  const handleRefresh = useCallback(() => {
     getContests(
       (contests) => setRows(contests),
       (error) => setError(error)
     );
-  }, []);
-
-  const handleRefresh = useCallback(() => {
-    setIsLoading(true);
-    getContests();
-  }, []);
-
-  const deleteEvent = useCallback((event_id) => {}, []);
+  }, [getContests]);
 
   const onClick = useCallback(
     (action, id) => {
-      if (action === "delete") deleteEvent(id);
-      else {
+      if (action === "delete") {
+        deleteContest(
+          id,
+          () => window.location.assign("/contests"),
+          () => window.location.assign("/contests")
+        );
+      } else {
         setModalDetailId(id);
-        setModalMode("edit");
         setShowModal(true);
       }
     },
-    [deleteEvent]
+    [deleteContest, handleRefresh]
   );
 
   const handleNewEvent = () => {
     setShowModal(true);
-    setModalMode("new_event");
   };
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -131,12 +142,12 @@ function ContestsPage() {
                         </Link>
                       </Tooltip>
                       <Tooltip title="Edit contest">
-                        <IconButton onClick={() => onClick("edit", row.id)}>
+                        <IconButton onClick={() => onClick("edit", row.url)}>
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Delete contest">
-                        <IconButton onClick={() => onClick("delete", row.id)}>
+                        <IconButton onClick={() => onClick("delete", row.url)}>
                           <DeleteIcon />
                         </IconButton>
                       </Tooltip>
@@ -155,6 +166,10 @@ function ContestsPage() {
     },
     [columns, onClick]
   );
+
+  if (!hasLoggedIn) {
+    return <Navigate to="/login" state={{ from: "/contests" }} replace />;
+  }
 
   return (
     <div>
@@ -247,8 +262,7 @@ function ContestsPage() {
         </Paper>
       </div>
       <ContestDetail
-        mode={modalMode}
-        event_id={modalDetailId}
+        contestUrl={modalDetailId}
         open={showModal}
         setOpen={setShowModal}
         refresh={handleRefresh}

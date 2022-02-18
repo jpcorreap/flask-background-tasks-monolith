@@ -1,6 +1,6 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import useFetchRequest from "../hooks/useFetchRequest";
-import { isTokenValid, parseFullJwt, parseJwt } from "../utils/jwtUtils";
+import { isTokenValid, parseFullJwt } from "../utils/jwtUtils";
 
 // Context to store all related with auth
 // This is a template to understand what is stored on context
@@ -17,17 +17,18 @@ export const AuthContext = createContext({
 export function AuthProvider({ children }) {
   let [email, setEmail] = useState(null);
   let [jwt, setJwt] = useState(null);
-
   const { post } = useFetchRequest();
 
-  useEffect(() => {
+  const validateLoggedAccount = useCallback(() => {
     const storedJwt = localStorage.getItem("access_token");
     if (isTokenValid(storedJwt)) {
       setJwt(storedJwt);
       console.info("Hello there", storedJwt);
       setEmail(parseFullJwt(storedJwt)["email"]);
+      return true;
     } else {
       localStorage.removeItem("access_token");
+      return false;
     }
   }, []);
 
@@ -74,7 +75,16 @@ export function AuthProvider({ children }) {
     callback();
   };
 
-  let value = { jwt, setJwt, email, signup, signin, signout, isTokenValid };
+  let value = {
+    jwt,
+    setJwt,
+    email,
+    signup,
+    signin,
+    signout,
+    isTokenValid,
+    validateLoggedAccount,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

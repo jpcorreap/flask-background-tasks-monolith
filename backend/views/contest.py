@@ -9,11 +9,12 @@ from flask import Response, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_restful import Resource
 from models.contest import Contest
+from models.submission import Submission
 from models.model import db
 from schemas.contest import contest_schema, contests_schema
 from settings import config
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload, noload
+from sqlalchemy.orm import joinedload, noload, subqueryload
 from utils.extensions import allowed_file
 from utils.validators import validate_url
 
@@ -46,17 +47,19 @@ class ResourceContest(Resource):
                     filename = f"{file_id}.{file_type}"
                     if not validate_url(request.form["url"]):
                         return ("Wrong URL", 400)
+                    start_date = datetime.strptime(
+                        request.form["start_date"], DATE_FORMAT
+                    )
+                    end_date = datetime.strptime(request.form["end_date"], DATE_FORMAT)
+                    if start_date > end_date: 
+                        return "End date should be greater than start date", 400
                     new_contest = Contest(
                         id=file_id,
                         url=request.form["url"],
                         name=request.form["name"],
                         image_type=file_type,
-                        start_date=datetime.strptime(
-                            request.form["start_date"], DATE_FORMAT
-                        ),
-                        end_date=datetime.strptime(
-                            request.form["end_date"], DATE_FORMAT
-                        ),
+                        start_date=start_date,
+                        end_date=end_date,
                         prize=request.form["prize"],
                         script=request.form["script"],
                         advices=request.form["advices"],
@@ -70,18 +73,24 @@ class ResourceContest(Resource):
                 return ("Not allowed file type", 400)
             return ("Not file was sent", 400)
         except SQLAlchemyError as e:
-            error = str(e.__dict__["orig"])
+            error = str(e._dict_["orig"])
             return error, 422
 
 
 class ResourceContestDetail(Resource):
+    @jwt_required(optional=True)
     def get(self, contest_url):
         contest = (
             Contest.query.filter_by(url=contest_url)
-            .options(joinedload(Contest.submissions, innerjoin=True))
+            .options(joinedload(Contest.submissions))
             .first_or_404()
         )
-
+        new_subs = []
+        if not get_jwt_identity():
+            for submission in contest.submissions: 
+                if submission.status == "converted": 
+                    new_subs.append(submission)
+            contest.submissions = new_subs
         return contest_schema.dump(contest)
 
     @jwt_required()
@@ -104,17 +113,21 @@ class ResourceContestDetail(Resource):
                 return ("Wrong URL", 400)
             contest.url = request.form["url"]
             contest.name = request.form["name"]
-            contest.start_date = datetime.strptime(
+            start_date = datetime.strptime(
                 request.form["start_date"], DATE_FORMAT
             )
-            contest.end_date = datetime.strptime(request.form["end_date"], DATE_FORMAT)
+            contest.start_date = start_date
+            end_date = datetime.strptime(request.form["end_date"], DATE_FORMAT)
+            contest.end_date = end_date
+            if start_date > end_date: 
+                return "End date should be greater than start date", 400
             contest.prize = request.form["prize"]
             contest.script = request.form["script"]
             contest.advices = request.form["advices"]
             db.session.commit()
             return contest_schema.dump(contest)
         except SQLAlchemyError as e:
-            error = str(e.__dict__["orig"])
+            error = str(e._dict_.get("orig",e))
             return error, 422
 
     @jwt_required()
@@ -154,13 +167,19 @@ class ResourceContestDetail(Resource):
             if advices := request.form.get("advices"):
                 contest.advices = advices
             if start_date := request.form.get("start_date"):
-                contest.start_date = start_date
+                contest.start_date = datetime.strptime(
+                start_date, DATE_FORMAT
+            )
             if end_date := request.form.get("end_date"):
-                contest.end_date = end_date
+                contest.end_date = datetime.strptime(
+                end_date, DATE_FORMAT
+            )
+            if start_date > end_date: 
+                return "End date should be greater than start date", 400
             db.session.commit()
             return contest_schema.dump(contest)
         except SQLAlchemyError as e:
-            error = str(e.__dict__["orig"])
+            error = str(e._dict_["orig"])
             return error, 422
 
 

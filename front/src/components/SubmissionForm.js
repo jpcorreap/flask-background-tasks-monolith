@@ -1,22 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import PublishIcon from "@mui/icons-material/Publish";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link, Navigate } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import { useAuth } from "../hooks/useAuth";
 import { Alert } from "@mui/material";
+import { useSubmissionForm } from "../services/useSubmissionForm";
+import { useParams } from "react-router-dom";
 
-export default function SignUpPage() {
-  const { signup, validateLoggedAccount } = useAuth();
-
-  useEffect(() => validateLoggedAccount(), []);
+export default function SubmissionForm() {
+  const { signup } = useAuth();
+  const { contestId } = useParams();
+  const [audioFile, setAudioFile] = useState(null);
+  const onFileChange = (event) => {
+    // Update the state
+    console.info("AAAAAAAH", event.target.files[0]);
+    setAudioFile(event.target.files[0]);
+  };
 
   const [data, setData] = useState({
     names: "",
@@ -28,18 +34,28 @@ export default function SignUpPage() {
   });
   const [error, setError] = useState(false);
   const [displaySuccess, setDisplaySuccess] = useState(false);
+  const { createSubmission } = useSubmissionForm();
 
   const handleSubmit = (event) => {
-    setError(undefined);
-    setDisplaySuccess(false);
+    // Create an object of formData
+    const formData = new FormData();
+
+    // Update the formData object
+    formData.append("file", audioFile, audioFile.name);
+
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+
     event.preventDefault();
-    // eslint-disable-next-line no-console
-    console.info("CONECTANDO AL ENDPOINT");
-    console.table(data);
-    signup(
-      data,
-      () => setDisplaySuccess(true),
-      (error) => setError(error)
+
+    createSubmission(
+      contestId,
+      formData,
+      () => {
+        setDisplaySuccess(true);
+      },
+      () => {}
     );
   };
 
@@ -49,10 +65,6 @@ export default function SignUpPage() {
       [event.target.name]: event.target.value,
     }));
   };
-
-  /* if (jwt) {
-    return <Navigate to="/" /*state={{ from: location }} replace />;
-  } */
 
   return (
     <Container component="main" maxWidth="xs">
@@ -66,10 +78,10 @@ export default function SignUpPage() {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
+          <PublishIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Submit your voice!
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -114,10 +126,10 @@ export default function SignUpPage() {
               <TextField
                 required
                 fullWidth
-                id="companyName"
-                value={data.company_name}
-                label="Company name"
-                name="company_name"
+                id="observations"
+                value={data.observations}
+                label="Observations"
+                name="observations"
                 onChange={handleChange}
               />
             </Grid>
@@ -125,42 +137,22 @@ export default function SignUpPage() {
               <TextField
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                value={data.password}
-                onChange={handleChange}
-                autoComplete="new-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="confirm_password"
-                label="Confirm password"
-                value={data.confirm_password}
-                type="password"
-                onChange={handleChange}
-                id="confirm_password"
+                name="file"
+                type="file"
+                id="file"
+                onChange={onFileChange}
               />
             </Grid>
           </Grid>
           <Button
-            type="submit"
             fullWidth
             variant="contained"
-            disabled={displaySuccess}
+            // disabled={displaySuccess}
             sx={{ mt: 3, mb: 2 }}
+            onClick={handleSubmit}
           >
-            Sign Up
+            Submit voice
           </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link to="/login">Already have an account? Sign in</Link>
-            </Grid>
-          </Grid>
         </Box>
         <div style={{ height: "30px" }}></div>
         {error ? (
@@ -172,7 +164,10 @@ export default function SignUpPage() {
         )}
         {displaySuccess ? (
           <Alert severity="success">
-            Account created successfully! Sign in automatically 5 seconds...
+            We have received your voice and we are processing it so that it can
+            be published in the page and can then be reviewed by our team. As
+            soon as the voice is published on the contest page, we will notify
+            you by email
           </Alert>
         ) : (
           <></>

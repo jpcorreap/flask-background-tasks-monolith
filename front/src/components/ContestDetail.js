@@ -1,10 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Grid, TextField } from "@mui/material";
-import useFetchRequest from "../hooks/useFetchRequest";
+import { useContestService } from "../services/useContestService";
 
 const style = {
   position: "absolute",
@@ -18,106 +17,110 @@ const style = {
   p: 4,
 };
 
-export default function ContestDetail({
-  open,
-  setOpen,
-  token,
-  refresh,
-  handleLogout,
-  event_id,
-  mode,
-}) {
-  const handleClose = () => setOpen(false);
+export default function ContestDetail({ open, setOpen, contestUrl }) {
+  const { createContest, getContestDetail, updateContest } =
+    useContestService();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [state, setState] = React.useState({
+  const [data, setData] = React.useState({
     name: "",
-    category: "",
-    place: "",
-    address: "",
-    start: "",
-    end: "",
-    modality: "",
+    url: "",
+    prize: "",
+    script: "",
+    advices: "",
+    start_date: "",
+    end_date: "",
   });
+  const [bannerImg, setBannerImg] = React.useState(null);
 
-  const fetchRequest = useFetchRequest();
-
-  const handleChange = (e) => {
-    setState({ ...state, [e.currentTarget.id]: e.currentTarget.value });
-  };
+  const handleRefresh = React.useCallback(() => {
+    getContestDetail(
+      contestUrl,
+      (d) => setData(d),
+      () => {}
+    );
+  }, [contestUrl, getContestDetail]);
 
   React.useEffect(() => {
-    if (event_id) {
-      setIsLoading(true);
-      fetchRequest
-        .get("/events/" + event_id, token)
-        .then((res) => res.json())
-        .then((data) => {
-          console.info("Entróó", data);
-          setState({
-            name: data.name,
-            category: data.category,
-            place: data.place,
-            address: data.address,
-            start: data.start,
-            end: data.end,
-            modality: data.modality,
-          });
-          setIsLoading(false);
-        });
+    if (contestUrl) {
+      handleRefresh();
     }
-  }, [event_id, fetchRequest, token]);
+  }, [contestUrl]);
+
+  const onFileChange = (event) => {
+    // Update the state
+    console.info("AAAAAAAH", event.target.files[0]);
+    setBannerImg(event.target.files[0]);
+  };
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.currentTarget.id]: e.currentTarget.value });
+  };
 
   const handleSubmit = () => {
-    if (mode === "edit") {
-      if (event_id) {
-        if (!/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.test(state.start)) {
-          alert("Fecha de inicio inválida, siga el formato DD/MM/AAAA");
-        } else {
-          if (!/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.test(state.end)) {
-            alert("Fecha de inicio inválida, siga el formato DD/MM/AAAA");
-          } else {
-            fetchRequest
-              .put("/events/" + event_id, state, token)
-              .then((res) => {
-                if (res.status === 400) {
-                  res.text().then((mes) => alert(mes));
-                } else if (res.status === 401) {
-                  handleLogout();
-                } else {
-                  handleClose();
-                  refresh();
-                }
-              })
-              .catch((e) => alert(e));
-          }
-        }
+    // Create an object of formData
+    const formData = new FormData();
+    // Update the formData object
+    formData.append("file", bannerImg, bannerImg.name);
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key]);
+    });
+    // Details of the uploaded file
+    // console.log(this.state.selectedFile);
+    // console.table(formData);
+    createContest(
+      formData,
+      () => {
+        setOpen(false);
+        handleRefresh();
+        window.location.assign("/");
+      },
+      () => {}
+    );
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const handleUpdate = () => {
+    // Create an object of formData
+    const formData = new FormData();
+    // Update the formData object
+    if (bannerImg) formData.append("file", bannerImg, bannerImg.name);
+
+    Object.keys(data).forEach((key) => {
+      console.info("Iterando ando", key, data[key]);
+      if (data[key]) {
+        formData.append(key, data[key]);
       }
-    } else if (mode === "new_event") {
-      fetchRequest
-        .post("/events", state, token)
-        .then((res) => {
-          if (res.status === 400) {
-            res.text().then((mes) => alert(mes));
-          } else if (res.status === 401) {
-            handleLogout();
-          } else {
-            handleClose();
-            refresh();
-          }
-        })
-        .catch((e) => alert(e));
-    }
+    });
+
+    updateContest(
+      contestUrl,
+      formData,
+      () => {
+        setOpen(false);
+        handleRefresh();
+        window.location.assign("/contests");
+      },
+      () => {
+        setOpen(false);
+        handleRefresh();
+        window.location.assign("/contests");
+      }
+    );
   };
 
   return (
     <div>
+      <Button onClick={() => window.location.assign("/contests")}>
+        Refresh
+      </Button>
       <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} style={{ width: 750, height: 570 }}>
+        <Box sx={style} style={{ width: 750, height: "90vh" }}>
           <Grid
             container
             direction="column"
@@ -128,13 +131,11 @@ export default function ContestDetail({
               <p>Cargando...</p>
             ) : (
               [
-                { id: "name", label: "Nombre" },
-                { id: "category", label: "Categoría" },
-                { id: "place", label: "Lugar" },
-                { id: "address", label: "Dirección" },
-                { id: "start", label: "Fecha inicio (DD/MM/AAAA)" },
-                { id: "end", label: "Fecha fin (DD/MM/AAAA)" },
-                { id: "modality", label: "Modalidad" },
+                { id: "name", label: "Name" },
+                { id: "url", label: "URL" },
+                { id: "script", label: "Script" },
+                { id: "prize", label: "Prize" },
+                { id: "advices", label: "Advices" },
               ].map((val) => (
                 <Grid
                   container
@@ -149,21 +150,75 @@ export default function ContestDetail({
                   <TextField
                     id={val.id}
                     label={val.label}
-                    defaultValue={state[val.id]}
-                    value={state[val.id]}
+                    defaultValue={data[val.id]}
+                    value={data[val.id]}
                     style={{ width: 500 }}
                     onChange={handleChange}
-                    disabled={mode === "read_only"}
+                    type={val.id === "prize" ? "number" : "text"}
                   />
                 </Grid>
               ))
             )}
-            <Button
-              variant="contained"
-              onClick={mode === "read_only" ? handleClose : handleSubmit}
+            {/* START DATE */}
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              style={{ marginBottom: 22 }}
             >
-              {mode === "read_only" ? "Regresar" : "Guardar"}
-            </Button>
+              <p style={{ fontSize: 15, fontWeight: "bolder" }}>Start date</p>
+              <TextField
+                type={"datetime-local"}
+                id={"start_date"}
+                style={{ width: 500 }}
+                onChange={(event) => {
+                  console.info(event);
+                  handleChange(event);
+                }}
+                value={data["start_date"]}
+              />
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              style={{ marginBottom: 22 }}
+            >
+              <p style={{ fontSize: 15, fontWeight: "bolder" }}>End date</p>
+              <TextField
+                type={"datetime-local"}
+                id={"end_date"}
+                style={{ width: 500 }}
+                onChange={handleChange}
+                value={data["end_date"]}
+              />
+            </Grid>
+            <Grid
+              container
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              style={{ marginBottom: 22 }}
+            >
+              <p style={{ fontSize: 15, fontWeight: "bolder" }}>Banner file</p>
+              <TextField
+                type={"file"}
+                id={"file"}
+                style={{ width: 500 }}
+                onChange={onFileChange}
+              />
+            </Grid>
+            {contestUrl ? (
+              <Button variant="contained" onClick={() => handleUpdate()}>
+                Update
+              </Button>
+            ) : (
+              <Button variant="contained" onClick={() => handleSubmit()}>
+                Submit
+              </Button>
+            )}
           </Grid>
         </Box>
       </Modal>
