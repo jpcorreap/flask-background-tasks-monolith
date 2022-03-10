@@ -21,6 +21,8 @@ services:
         entrypoint: flask run -h 0.0.0.0 -p 8080
         depends_on:
             - db
+        volumes:
+            - files-data:/backend/
 
     redis:
         container_name: redis
@@ -38,7 +40,9 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
-        entrypoint: celery -A tasks.app worker --loglevel=INFO -n worker@app -O fair -Q app
+        entrypoint:  celery -A tasks worker -l INFO -E
+        volumes:
+            - files-data:/backend/
        
     celery-beat:
         env_file:
@@ -46,7 +50,9 @@ services:
         build:
             context: ./
             dockerfile: Dockerfile
-        entrypoint: celery -A tasks.app beat --loglevel=DEBUG
+        entrypoint: celery -A tasks beat -l info
+        volumes:
+            - files-data:/backend/
         depends_on:
             - api
             - redis
@@ -56,3 +62,4 @@ services:
 
 volumes:
   postgres-data:
+  files-data:
