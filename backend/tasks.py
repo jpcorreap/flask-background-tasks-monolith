@@ -10,7 +10,7 @@ from models.user import User
 from settings import config
 from utils.db import db_session
 
-app = Celery("tasks", broker="redis://redis:6379/0")
+app = Celery("tasks", broker="redis://localhost:6379/0")
 
 
 class SqlAlchemyTask(app.Task):
