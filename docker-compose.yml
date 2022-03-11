@@ -9,9 +9,9 @@ services:
             dockerfile: Dockerfile
         ports:
             - 8080:8080
-        entrypoint: flask run -h 0.0.0.0 -p 8080
+        entrypoint: flask run  -h 0.0.0.0 -p 8080
         volumes:
-            - files-data:/backend/
+            - ./:/application/
 
     redis:
         container_name: redis
@@ -30,7 +30,7 @@ services:
             dockerfile: Dockerfile
         entrypoint:  celery -A tasks worker -l INFO -E
         volumes:
-            - files-data:/backend/
+            - ./:/application/
        
     celery-beat:
         env_file:
@@ -40,12 +40,8 @@ services:
             dockerfile: Dockerfile
         entrypoint: celery -A tasks beat -l info
         volumes:
-            - files-data:/backend/
+            - ./:/application/
         depends_on:
             - api
             - redis
             - app-worker
-
-
-volumes:
-  files-data:

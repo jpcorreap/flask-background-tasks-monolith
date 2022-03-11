@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
 import uuid
-
 from constants.extensions import MAPPER_IMAGE_FILE
 from constants.format import DATE_FORMAT
 from constants.limit import ROWS_PER_PAGE
@@ -14,7 +13,7 @@ from models.model import db
 from schemas.contest import contest_schema, contests_schema
 from settings import config
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import joinedload, noload, subqueryload
+from sqlalchemy.orm import joinedload, noload, subqueryload, contains_eager
 from utils.extensions import allowed_file
 from utils.validators import validate_url
 
@@ -80,10 +79,17 @@ class ResourceContest(Resource):
 class ResourceContestDetail(Resource):
     @jwt_required(optional=True)
     def get(self, contest_url):
+        page = request.args.get("page", 1, type=int)
+      
         contest = (
-            Contest.query.filter_by(url=contest_url)
-            .options(joinedload(Contest.submissions))
-            .first_or_404()
+           (Contest.query.filter_by(url=contest_url)
+            .join(Contest.submissions)
+            .options(contains_eager(Contest.submissions))
+            .order_by(
+                Submission.upload_date.desc())
+                .paginate(page=page, per_page=ROWS_PER_PAGE)
+                .items
+            )[0]
         )
         new_subs = []
         if not get_jwt_identity():
