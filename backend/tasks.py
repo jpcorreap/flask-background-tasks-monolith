@@ -10,7 +10,7 @@ from models.user import User
 from settings import config
 from utils.db import db_session
 
-app = Celery("tasks", broker="redis://localhost:6379/0")
+app = Celery("tasks", broker="redis://redis:6379/0")
 
 
 class SqlAlchemyTask(app.Task):
@@ -76,9 +76,9 @@ def process_audio_files():
 
         users_emails = [user.email for _, user in converted_submissions]
 
-        send_many_emails(
+        """send_many_emails(
             users_emails, "Your Submission has been converted successfully"
-        )
+        )"""
 
 
 @app.on_after_configure.connect
