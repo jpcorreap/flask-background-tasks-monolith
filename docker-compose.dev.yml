@@ -1,6 +1,15 @@
 version: "3.5"
 
 services:
+    db:
+        container_name: db
+        env_file:
+            -   ./backend/.env
+        image: postgres:latest
+        volumes:
+          - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+          - postgres-data:/var/lib/postgresql/data
+        restart: always
     api:
         env_file:
             -   ./backend/.env
@@ -10,6 +19,8 @@ services:
         ports:
             - 8080:8080
         entrypoint: flask run -h 0.0.0.0 -p 8080
+        depends_on:
+            - db
         volumes:
             - files-data:/backend/
 
@@ -25,6 +36,7 @@ services:
         depends_on:
             - api
             - redis
+            - db
         build:
             context: ./
             dockerfile: Dockerfile
@@ -44,8 +56,10 @@ services:
         depends_on:
             - api
             - redis
+            - db
             - app-worker
 
 
 volumes:
+  postgres-data:
   files-data:
