@@ -12,8 +12,9 @@ import HelpIcon from "@mui/icons-material/Help";
 import { useUsersService } from "../services/useUsersService";
 import { useState } from "react";
 
+import { FETCH_URL } from "../config";
+
 export default function VoiceCard({ submission }) {
-  const FETCH_URL = "http://172.24.41.21/api";
   const { jwt } = useAuth();
   const { getUserInfo } = useUsersService();
   const [user, setUser] = useState();

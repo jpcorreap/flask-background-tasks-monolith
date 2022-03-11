@@ -17,9 +17,10 @@ const style = {
   p: 4,
 };
 
-export default function ContestDetail({ open, setOpen, contestUrl }) {
+export default function ContestDetail({ open, setOpen, contestUrl, refresh }) {
   const { createContest, getContestDetail, updateContest } =
     useContestService();
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [data, setData] = React.useState({
     name: "",
@@ -67,12 +68,13 @@ export default function ContestDetail({ open, setOpen, contestUrl }) {
     // Details of the uploaded file
     // console.log(this.state.selectedFile);
     // console.table(formData);
+    console.info("OMEEEEEEESASDFASFASEE", { data });
     createContest(
       formData,
       () => {
         setOpen(false);
-        handleRefresh();
-        window.location.assign("/");
+        // debugger;
+        refresh();
       },
       () => {}
     );
@@ -87,33 +89,41 @@ export default function ContestDetail({ open, setOpen, contestUrl }) {
     if (bannerImg) formData.append("file", bannerImg, bannerImg.name);
 
     Object.keys(data).forEach((key) => {
-      console.info("Iterando ando", key, data[key]);
-      if (data[key]) {
+      if (data[key] && key !== "start_date" && key !== "end_date") {
         formData.append(key, data[key]);
       }
     });
+
+    const splittedStartDate = data["start_date"].split(":");
+    const splittedEndDate = data["end_date"].split(":");
+
+    formData.append(
+      "start_date",
+      `${splittedStartDate[0]}:${splittedStartDate[1]}`
+    );
+
+    formData.append("end_date", `${splittedEndDate[0]}:${splittedEndDate[1]}`);
 
     updateContest(
       contestUrl,
       formData,
       () => {
         setOpen(false);
-        handleRefresh();
-        window.location.assign("/contests");
+        refresh();
       },
       () => {
         setOpen(false);
-        handleRefresh();
-        window.location.assign("/contests");
+        getContestDetail(
+          contestUrl,
+          (d) => setData(d),
+          () => {}
+        );
       }
     );
   };
 
   return (
     <div>
-      <Button onClick={() => window.location.assign("/contests")}>
-        Refresh
-      </Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -211,11 +221,11 @@ export default function ContestDetail({ open, setOpen, contestUrl }) {
               />
             </Grid>
             {contestUrl ? (
-              <Button variant="contained" onClick={() => handleUpdate()}>
+              <Button variant="contained" onClick={handleUpdate}>
                 Update
               </Button>
             ) : (
-              <Button variant="contained" onClick={() => handleSubmit()}>
+              <Button variant="contained" onClick={handleSubmit}>
                 Submit
               </Button>
             )}

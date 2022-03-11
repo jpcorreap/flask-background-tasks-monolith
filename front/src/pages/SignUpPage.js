@@ -8,13 +8,14 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Copyright from "../components/Copyright";
 import { useAuth } from "../hooks/useAuth";
 import { Alert } from "@mui/material";
 
 export default function SignUpPage() {
   const { signup, validateLoggedAccount } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => validateLoggedAccount(), []);
 
@@ -38,7 +39,12 @@ export default function SignUpPage() {
     console.table(data);
     signup(
       data,
-      () => setDisplaySuccess(true),
+      () => {
+        setDisplaySuccess(true);
+        setInterval(() => {
+          window.location.assign("/");
+        }, 5000);
+      },
       (error) => setError(error)
     );
   };

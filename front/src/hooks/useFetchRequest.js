@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { useAuth } from "./useAuth";
-
-export const fetch_url = "http://172.24.41.21/api";
+import { FETCH_URL } from "../config";
 
 export default function useFetchRequest() {
   const { jwt } = useAuth();
@@ -23,7 +22,7 @@ export default function useFetchRequest() {
     () => ({
       async get(path) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, { headers, method: "GET" }).then(
+        return fetch(FETCH_URL + path, { headers, method: "GET" }).then(
           (res) => {
             console.info({ res });
             return res.json();
@@ -33,14 +32,14 @@ export default function useFetchRequest() {
 
       async getMedia(path) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, { headers, method: "GET" }).then((res) =>
+        return fetch(FETCH_URL + path, { headers, method: "GET" }).then((res) =>
           res.blob()
         );
       },
 
       async patch(path, body) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, {
+        return fetch(FETCH_URL + path, {
           headers,
           method: "PATCH",
           body: JSON.stringify(body),
@@ -52,7 +51,7 @@ export default function useFetchRequest() {
 
       async post(path, body) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, {
+        return fetch(FETCH_URL + path, {
           headers,
           method: "POST",
           body: JSON.stringify(body),
@@ -65,7 +64,7 @@ export default function useFetchRequest() {
 
       async postMedia(path, formData) {
         const headers = await _getHeadersMedia();
-        return fetch(fetch_url + path, {
+        return fetch(FETCH_URL + path, {
           headers,
           method: "POST",
           body: formData,
@@ -78,7 +77,7 @@ export default function useFetchRequest() {
 
       async putMedia(path, formData) {
         const headers = await _getHeadersMedia();
-        return fetch(fetch_url + path, {
+        return fetch(FETCH_URL + path, {
           headers,
           method: "PUT",
           body: formData,
@@ -90,7 +89,7 @@ export default function useFetchRequest() {
 
       async httpDelete(path, body) {
         const headers = await _getHeaders();
-        return fetch(fetch_url + path, {
+        return fetch(FETCH_URL + path, {
           headers,
           method: "DELETE",
           body: JSON.stringify(body),

@@ -24,6 +24,7 @@ import { useContestsService } from "../services/useContestsService";
 import { Link, Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useContestService } from "../services/useContestService";
+import useFetchRequest from "../hooks/useFetchRequest";
 
 function ContestsPage() {
   const [hasLoggedIn, setHasLoggedIn] = useState(true);
@@ -35,7 +36,21 @@ function ContestsPage() {
   const { validateLoggedAccount } = useAuth();
   const { getContests } = useContestsService();
   const { deleteContest } = useContestService();
+  const { get } = useFetchRequest();
 
+  useEffect(() => {
+    setIsLoading(true);
+    getContests(
+      (contests) => {
+        setRows(contests);
+        setIsLoading(false);
+      },
+      (error) => {
+        setError(error);
+        setIsLoading(false);
+      }
+    );
+  }, []);
   useEffect(() => {
     if (validateLoggedAccount()) {
       getContests(
@@ -47,20 +62,28 @@ function ContestsPage() {
     }
   }, [getContests, validateLoggedAccount]);
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = () => {
     getContests(
       (contests) => setRows(contests),
       (error) => setError(error)
     );
-  }, [getContests]);
+  };
 
   const onClick = useCallback(
     (action, id) => {
       if (action === "delete") {
         deleteContest(
           id,
-          () => window.location.assign("/contests"),
-          () => window.location.assign("/contests")
+          () =>
+            getContests(
+              (contests) => setRows(contests),
+              (error) => setError(error)
+            ),
+          () =>
+            getContests(
+              (contests) => setRows(contests),
+              (error) => setError(error)
+            )
         );
       } else {
         setModalDetailId(id);
@@ -167,6 +190,33 @@ function ContestsPage() {
     [columns, onClick]
   );
 
+  const tableContent = useMemo(() => {
+    if (isLoading)
+      return (
+        <TableRow hover={true} role="checkbox" tabIndex={-1}>
+          <TableCell colSpan={8}>
+            <p>Loading...</p>
+          </TableCell>
+        </TableRow>
+      );
+
+    if (rows.length)
+      return rows
+        .slice(pagination[0], pagination[1])
+        .map((row) => createRow(row));
+
+    if (!isLoading && rows.length)
+      return (
+        <TableRow hover={true} role="checkbox" tabIndex={-1}>
+          <TableCell colSpan={8}>
+            <p>No data</p>
+          </TableCell>
+        </TableRow>
+      );
+
+    return <></>;
+  }, [createRow, isLoading, pagination, rows]);
+
   if (!hasLoggedIn) {
     return <Navigate to="/login" state={{ from: "/contests" }} replace />;
   }
@@ -207,25 +257,7 @@ function ContestsPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {!isLoading ? (
-                  rows.length ? (
-                    rows
-                      .slice(pagination[0], pagination[1])
-                      .map((row) => createRow(row))
-                  ) : (
-                    <TableRow hover={true} role="checkbox" tabIndex={-1}>
-                      <TableCell colSpan={8}>
-                        <p>No data</p>
-                      </TableCell>
-                    </TableRow>
-                  )
-                ) : (
-                  <TableRow hover={true} role="checkbox" tabIndex={-1}>
-                    <TableCell colSpan={8}>
-                      <p>Loading...</p>
-                    </TableCell>
-                  </TableRow>
-                )}
+                {tableContent}
                 {/*error && (
               <TableRow hover={true} role="checkbox" tabIndex={-1}>
                 <TableCell colSpan={5}>
