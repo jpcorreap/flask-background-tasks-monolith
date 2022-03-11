@@ -80,17 +80,15 @@ class ResourceContestDetail(Resource):
     @jwt_required(optional=True)
     def get(self, contest_url):
         page = request.args.get("page", 1, type=int)
-      
         contest = (
-           (Contest.query.filter_by(url=contest_url)
-            .join(Contest.submissions)
+           Contest.query.filter_by(url=contest_url)
+            .join(Contest.submissions, isouter=True)
             .options(contains_eager(Contest.submissions))
-            .order_by(
-                Submission.upload_date.desc())
-                .paginate(page=page, per_page=ROWS_PER_PAGE)
-                .items
-            )[0]
-        )
+            .order_by(Submission.upload_date.desc())
+            .paginate(page=page, per_page=ROWS_PER_PAGE)
+            .items
+        )[0]
+        
         new_subs = []
         if not get_jwt_identity():
             for submission in contest.submissions: 

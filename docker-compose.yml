@@ -12,13 +12,14 @@ services:
         entrypoint: flask run  -h 0.0.0.0 -p 8080
         volumes:
             - ./:/application/
-
+        restart: always
     redis:
         container_name: redis
         image: redis
-        ports: 
+        ports:
             - '6379:6379'
-       
+        restart: always
+
     app-worker:
         env_file:
             -   ./backend/.env
@@ -31,7 +32,7 @@ services:
         entrypoint:  celery -A tasks worker -l INFO -E
         volumes:
             - ./:/application/
-       
+        restart: always
     celery-beat:
         env_file:
             - ./backend/.env
@@ -41,6 +42,7 @@ services:
         entrypoint: celery -A tasks beat -l info
         volumes:
             - ./:/application/
+        restart: always
         depends_on:
             - api
             - redis
