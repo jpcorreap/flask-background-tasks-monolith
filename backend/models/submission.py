@@ -24,6 +24,10 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     observations = db.Column(db.String(512), nullable=False)
     status = db.Column(db.Enum(SubmissionStatus), nullable=False)
-    contest_id = db.Column(db.Integer, db.ForeignKey("contest.id"), nullable=False)
+    contest_id = db.Column(
+        UUID(as_uuid=True),
+        db.ForeignKey("contest.id"),
+        nullable=False
+    )
     upload_date = db.Column(db.DateTime, nullable=False)
     file_type = db.Column(db.Enum(SubmissionFileType), nullable=False)

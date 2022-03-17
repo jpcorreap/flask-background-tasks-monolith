@@ -1,32 +1,51 @@
 import smtplib
 import ssl
 from typing import List
+from settings import config
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.header import Header
+from email.utils import formataddr
 
-from settings import EMAIL_PASSWORD, EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, EMAIL_USER
 
 context = ssl.create_default_context()
 
 
 def send_email(to: str, message: str):
-    with smtplib.SMTP_SSL(
-        EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, context=context
+      with smtplib.SMTP(
+        config.EMAIL_SERVER_HOST, config.EMAIL_SERVER_PORT
     ) as server:
-        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'Status Submission Update SuperVoices'
+        msg['From'] = formataddr(('Super Voices', 'juanpa1202@gmail.com'))
+        msg['To'] = to
+        msg.attach(MIMEText(message, 'plain'))
+        server.ehlo()
+        server.starttls(context=context)
+        server.login(config.EMAIL_USER, config.EMAIL_PASSWORD)
         server.sendmail(
-            EMAIL_USER,
+            config.EMAIL_USER,
             to,
-            message,
+            msg.as_string(),
         )
 
 
 def send_many_emails(to: List[str], message: str):
-    with smtplib.SMTP_SSL(
-        EMAIL_SERVER_HOST, EMAIL_SERVER_PORT, context=context
+    print(f"\n-> Enviando Emails a {len(to)} users")
+    with smtplib.SMTP(
+        config.EMAIL_SERVER_HOST, config.EMAIL_SERVER_PORT
     ) as server:
-        server.login(EMAIL_USER, EMAIL_PASSWORD)
+        server.ehlo()
+        server.starttls(context=context)
+        server.login(config.EMAIL_USER, config.EMAIL_PASSWORD)
         for receiver in to:
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = 'Status Submission Update SuperVoices'
+            msg['From'] = formataddr(('Super Voices', 'juanpa1202@gmail.com'))
+            msg['To'] = receiver
+            msg.attach(MIMEText(message, 'plain'))
             server.sendmail(
-                EMAIL_USER,
+                config.EMAIL_USER,
                 receiver,
-                message,
+                msg.as_string(),
             )

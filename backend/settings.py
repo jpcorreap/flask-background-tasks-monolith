@@ -26,3 +26,13 @@ class Config(object):
 
 
 config = Config()
+for dir in [
+    config.PROCESSED_FOLDER_PATH,
+    config.PROCESSING_FOLDER_PATH,
+    config.BANNER_FOLDER_PATH,
+]:
+    subdirs = dir.split("/")
+    for pos in range(len(subdirs)):
+        curr_dir = "/".join(subdirs[: pos + 1])
+        if not os.path.exists(curr_dir):
+            os.mkdir(curr_dir)

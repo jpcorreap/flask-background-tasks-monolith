@@ -1,4 +1,4 @@
-from backend.constants.extensions import ALLOWED_EXTENSIONS
+from constants.extensions import ALLOWED_EXTENSIONS
 
 
 def allowed_file(filename, file_type):

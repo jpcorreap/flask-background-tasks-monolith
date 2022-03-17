@@ -7,6 +7,7 @@ from flask_restful import Resource
 from models.admin import Admin
 from models.model import db
 from models.user import User
+from schemas.user import user_schema
 
 
 class SignIn(Resource):
@@ -19,7 +20,9 @@ class SignIn(Resource):
                 admin.password, request.json["password"].encode("utf-8")
             ):
                 access_token = create_access_token(
-                    identity=str(user.id), expires_delta=timedelta(hours=2)
+                    identity=str(user.id),
+                    expires_delta=timedelta(hours=2),
+                    additional_claims={"email": request.json["email"]},
                 )
                 ans = {"access_token": access_token}, 200
         return ans
@@ -44,6 +47,14 @@ class SignUp(Resource):
         db.session.add(new_admin)
         db.session.commit()
         access_token = create_access_token(
-            identity=str(new_user.id), expires_delta=timedelta(hours=2)
+            identity=str(new_user.id),
+            expires_delta=timedelta(hours=2),
+            additional_claims={"email": request.json["email"]},
         )
         return {"access_token": access_token}, 200
+
+
+class UserDetail(Resource):
+    def get(self, user_id):
+        user = User.query.filter_by(id=user_id).first_or_404()
+        return user_schema.dump(user)
