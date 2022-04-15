@@ -10,10 +10,10 @@ from models.user import User
 from settings import config
 from utils.db import db_session
 
-app = Celery("tasks", broker="redis://redis:6379/0")
+celery_app = Celery("tasks", broker="redis://redis:6379/0")
 
 
-class SqlAlchemyTask(app.Task):
+class SqlAlchemyTask(celery_app.Task):
     """An abstract Celery Task that ensures that the connection the the
     database is closed on task completion"""
 
@@ -44,7 +44,7 @@ def convert_to_mp3(filename: str):
     )
 
 
-@app.task(base=SqlAlchemyTask)
+@celery_app.task(base=SqlAlchemyTask)
 def process_audio_files(sub_id: str, file_type: str, user_email: str):
     submission = Submission.query.filter_by(id=sub_id)
     filename = f"{sub_id}.{file_type}"

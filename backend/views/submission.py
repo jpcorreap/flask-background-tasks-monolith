@@ -13,7 +13,7 @@ from models.submission import Submission, SubmissionStatus
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from settings import config
-from tasks import app
+from tasks import celery_app
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
 
