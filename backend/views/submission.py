@@ -65,18 +65,16 @@ class ResourceSubmission(Resource):
                 upload_date=datetime.now(),
                 file_type=file_type,
             )
-            celery_app.send_task(
-                "tasks.process_audio_files",
-                kwargs={
-                    "sub_id": file_id,
-                    "file_type": file_type,
-                    "user_email": user.email,
-                },
-            )
+
             db.session.add(new_submission)
             db.session.commit()
             file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
             file.close()
+            celery_app.send_task("tasks.process_audio_files", 
+            kwargs={
+                "sub_id": file_id,
+                "file_type": file_type,
+                "user_email": user.email,},)
             return submission_schema.dump(new_submission)
         return ("Not allowed file type", 400)
 

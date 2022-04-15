@@ -12,17 +12,18 @@ context = ssl.create_default_context()
 
 
 def send_email(to: str, message: str):
-      with smtplib.SMTP(
+    print(f"\n-> Enviando Email a {to}")
+    with smtplib.SMTP(
         config.EMAIL_SERVER_HOST, config.EMAIL_SERVER_PORT
     ) as server:
+        server.ehlo()
+        server.starttls(context=context)
+        server.login(config.SENDGRID_USER, config.SENDGRID_SECRET)
         msg = MIMEMultipart('alternative')
         msg['Subject'] = 'Status Submission Update SuperVoices'
         msg['From'] = formataddr(('Super Voices', 'juanpa1202@gmail.com'))
         msg['To'] = to
         msg.attach(MIMEText(message, 'plain'))
-        server.ehlo()
-        server.starttls(context=context)
-        server.login(config.EMAIL_USER, config.EMAIL_PASSWORD)
         server.sendmail(
             config.EMAIL_USER,
             to,

@@ -22,7 +22,7 @@ services:
         depends_on:
             - db
         volumes:
-            - files-data:/backend/
+           - ./:/application/
 
     redis:
         container_name: redis
@@ -42,24 +42,8 @@ services:
             dockerfile: Dockerfile
         entrypoint:  celery -A tasks worker -l INFO -E
         volumes:
-            - files-data:/backend/
-       
-    celery-beat:
-        env_file:
-            - ./backend/.env
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        entrypoint: celery -A tasks beat -l info
-        volumes:
-            - files-data:/backend/
-        depends_on:
-            - api
-            - redis
-            - db
-            - app-worker
+            - ./:/application/
 
 
 volumes:
   postgres-data:
-  files-data:

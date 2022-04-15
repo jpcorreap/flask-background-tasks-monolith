@@ -44,9 +44,9 @@ def convert_to_mp3(filename: str):
     )
 
 
-@celery_app.task(base=SqlAlchemyTask)
+@celery_app.task(name="tasks.process_audio_files", base=SqlAlchemyTask)
 def process_audio_files(sub_id: str, file_type: str, user_email: str):
-    submission = Submission.query.filter_by(id=sub_id)
+    submission = db_session.query(Submission).filter_by(id=sub_id).first()
     filename = f"{sub_id}.{file_type}"
     try:
         convert_to_mp3(filename)

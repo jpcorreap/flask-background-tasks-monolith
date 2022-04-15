@@ -23,6 +23,8 @@ class Config(object):
     EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
     EMAIL_SERVER_PORT = os.getenv("EMAIL_SERVER_PORT")
     EMAIL_SERVER_HOST = os.getenv("EMAIL_SERVER_HOST")
+    SENDGRID_USER = os.getenv("SENDGRID_USER")
+    SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
 
 
 config = Config()
