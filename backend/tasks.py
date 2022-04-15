@@ -1,7 +1,7 @@
 import os
 
 from celery import Celery
-from custom_email.email_sender import send_many_emails
+from custom_email.email_sender import send_email, send_many_emails
 import ffmpeg
 from models.admin import Admin
 from models.contest import Contest
@@ -45,40 +45,16 @@ def convert_to_mp3(filename: str):
 
 
 @app.task(base=SqlAlchemyTask)
-def process_audio_files():
-    pending_submissions = (
-        db_session.query(Submission, User)
-        .filter_by(status=SubmissionStatus.processing)
-        .join(User.submissions)
-        .all()
-    )
-
-    if pending_submissions:
-        for (submission, _) in pending_submissions:
-            filename = "{id}.{file_type}".format(
-                id=submission.id, file_type=submission.file_type
-            )
-            try:
-                convert_to_mp3(filename)
-                submission.status = SubmissionStatus.converted
-            except Exception as e:
-                print(e)
-
-        converted_submissions = list(
-            filter(
-                lambda xy: (xy[0].status == SubmissionStatus.converted),
-                pending_submissions,
-            )
-        )
-
-        db_session.add_all(map(lambda xy: xy[0], converted_submissions))
+def process_audio_files(sub_id: str, file_type: str, user_email: str):
+    submission = Submission.query.filter_by(id=sub_id)
+    filename = f"{sub_id}.{file_type}"
+    try:
+        convert_to_mp3(filename)
+        submission.status = SubmissionStatus.converted
         db_session.commit()
-
-        users_emails = [user.email for _, user in converted_submissions]
-
-        """send_many_emails(
-            users_emails, "Your Submission has been converted successfully"
-        )"""
+        send_email(user_email, "Your Submission has been converted successfully")
+    except Exception as e:
+        print(e)
 
 
 @app.on_after_configure.connect

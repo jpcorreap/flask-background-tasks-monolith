@@ -13,6 +13,7 @@ from models.submission import Submission, SubmissionStatus
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from settings import config
+from tasks import app
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
 
@@ -63,6 +64,14 @@ class ResourceSubmission(Resource):
                 contest_id=contest.id,
                 upload_date=datetime.now(),
                 file_type=file_type,
+            )
+            app.send_task(
+                "tasks.process_audio_files",
+                kwargs={
+                    "sub_id": file_id,
+                    "file_type": file_type,
+                    "user_email": user.email,
+                },
             )
             db.session.add(new_submission)
             db.session.commit()
