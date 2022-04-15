@@ -13,11 +13,10 @@ from models.submission import Submission, SubmissionStatus
 from models.user import User
 from schemas.submission import submission_schema, submissions_schema
 from settings import config
-from tasks import celery_app
 from utils.extensions import allowed_file
 from werkzeug.utils import secure_filename
-
-
+from tasks import process_audio_files
+from flask import current_app
 class ResourceSubmission(Resource):
     @jwt_required(optional=True)
     def get(self, contest_url):
@@ -65,14 +64,14 @@ class ResourceSubmission(Resource):
                 upload_date=datetime.now(),
                 file_type=file_type,
             )
-            celery_app.send_task(
-                "tasks.process_audio_files",
-                kwargs={
-                    "sub_id": file_id,
-                    "file_type": file_type,
-                    "user_email": user.email,
-                },
-            )
+            with current_app.app_context():
+                process_audio_files.delay(
+                    **{
+                        "sub_id": file_id,
+                        "file_type": file_type,
+                        "user_email": user.email,
+                    }
+                )
             db.session.add(new_submission)
             db.session.commit()
             file.save(os.path.join(config.UPLOAD_FOLDER, final_name))

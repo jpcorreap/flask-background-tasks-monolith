@@ -1,6 +1,6 @@
 import os
 
-from celery import Celery
+from z import celery_app
 from custom_email.email_sender import send_email
 import ffmpeg
 from models.admin import Admin
@@ -9,9 +9,6 @@ from models.submission import Submission, SubmissionStatus
 from models.user import User
 from settings import config
 from utils.db import db_session
-
-celery_app = Celery("tasks", broker="redis://redis:6379/0")
-
 
 class SqlAlchemyTask(celery_app.Task):
     """An abstract Celery Task that ensures that the connection the the
