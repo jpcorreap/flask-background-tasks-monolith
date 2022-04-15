@@ -65,7 +65,7 @@ class ResourceSubmission(Resource):
                 upload_date=datetime.now(),
                 file_type=file_type,
             )
-            app.send_task(
+            celery_app.send_task(
                 "tasks.process_audio_files",
                 kwargs={
                     "sub_id": file_id,
