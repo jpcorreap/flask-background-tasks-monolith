@@ -1,7 +1,7 @@
 import os
 
 from celery import Celery
-from custom_email.email_sender import send_email, send_many_emails
+from custom_email.email_sender import send_email
 import ffmpeg
 from models.admin import Admin
 from models.contest import Contest
@@ -55,11 +55,3 @@ def process_audio_files(sub_id: str, file_type: str, user_email: str):
         send_email(user_email, "Your Submission has been converted successfully")
     except Exception as e:
         print(e)
-
-
-@app.on_after_configure.connect
-def setup_periodic_tasks(sender, **kwargs):
-    # Calls process_audio_files every 5 minutes.
-    sender.add_periodic_task(
-        300, process_audio_files.s(), name="Process Files every 5 minutes"
-    )
