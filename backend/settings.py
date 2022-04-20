@@ -15,10 +15,9 @@ class Config(object):
     )
     JWT_SECRET_KEY = os.getenv("SECRET")
     PROPAGATE_EXCEPTIONS = True
-    PROCESSING_FOLDER_PATH = "{}/converter/in_process".format(os.path.curdir)
-    UPLOAD_FOLDER = PROCESSING_FOLDER_PATH
-    PROCESSED_FOLDER_PATH = "{}/converter/processed".format(os.path.curdir)
-    BANNER_FOLDER_PATH = "{}/img/banner".format(os.path.curdir)
+    PROCESSING_FOLDER_PATH = "converter/in_process"
+    PROCESSED_FOLDER_PATH = "converter/processed"
+    BANNER_FOLDER_PATH = "img/banner"
     EMAIL_USER = os.getenv("EMAIL_USER")
     EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
     EMAIL_SERVER_PORT = os.getenv("EMAIL_SERVER_PORT")

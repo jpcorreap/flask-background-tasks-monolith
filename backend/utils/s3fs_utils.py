@@ -13,15 +13,21 @@ def get_client():
     )
 
 
-def upload_file(file):
-    fs = get_client()
-    print("Antes:")
-    print(fs.ls(BUCKET_NAME))
+def upload_file(file, folder, final_name):
+    try:
+        fs = get_client()
+        print("Antes:")
+        print(fs.ls(BUCKET_NAME))
 
-    with fs.open(f"s3://{BUCKET_NAME}/{file.filename}", "wb") as s3_obj:
-        s3_obj.write(file.read())
+        with fs.open(f"s3://{BUCKET_NAME}/{folder}/{final_name}", "wb") as s3_obj:
+            s3_obj.write(file.read())
 
-    print("Ahora:")
-    print(fs.ls(BUCKET_NAME))
+        print("Ahora:")
+        print(fs.ls(BUCKET_NAME))
 
-    return {"message": "success"}
+        return True
+
+    except Exception as e:
+
+        print(str(e))
+        return False

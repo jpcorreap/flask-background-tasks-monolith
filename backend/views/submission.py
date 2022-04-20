@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import uuid
+from backend.utils.s3fs_utils import upload_file
 
 from constants.extensions import MAPPER_AUDIO_FILE
 from constants.limit import ROWS_PER_PAGE
@@ -68,13 +69,24 @@ class ResourceSubmission(Resource):
 
             db.session.add(new_submission)
             db.session.commit()
-            file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
-            file.close()
-            celery_app.send_task("tasks.process_audio_files", 
-            kwargs={
-                "sub_id": file_id,
-                "file_type": file_type,
-                "user_email": user.email,},)
+            # Esto era de los modelos A, B y C
+            # file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
+            # file.close()
+
+            # Cambio al modelo D
+            successfully_uploaded = upload_file(file, config.PROCESSING_FOLDER_PATH, final_name)
+
+            if successfully_uploaded:
+                # TODO modificar esta logica para enviar a SQS en lugar de Celery
+                celery_app.send_task(
+                    "tasks.process_audio_files", 
+                    kwargs={
+                        "sub_id": file_id,
+                        "file_type": file_type,
+                        "user_email": user.email
+                    }
+                )
+
             return submission_schema.dump(new_submission)
         return ("Not allowed file type", 400)
 
