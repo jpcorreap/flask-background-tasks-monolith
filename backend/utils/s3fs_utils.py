@@ -5,12 +5,12 @@ BUCKET_NAME = "test-python-boto3-cloud"
 
 def get_client():
     return s3fs.S3FileSystem(
-        #key="",
-        #secret="",
-        #token=""
+        # key="",
+        # secret="",
+        # token=""
         # Accessing all buckets you have access to with your credentials
         anon=False
-    ) 
+    )
 
 
 def list_files(fs_client):
@@ -30,6 +30,20 @@ def upload_file(file_in_bytes, folder, final_name):
         return False
 
 
+def get_signed_url(folder, final_name) -> str:
+    fs = get_client()
+    signed_url = fs.sign(f"s3://{BUCKET_NAME}/{folder}/{final_name}")
+    return signed_url
+
+
+def get_presigned_url(folder, final_name) -> str:
+    fs = get_client()
+    presigned_url = fs.url(
+        f"s3://{BUCKET_NAME}/{folder}/{final_name}", client_method="put_object"
+    )
+    return presigned_url
+
+
 def download_file(s3_path, system_path):
     fs = get_client()
-    fs.download(f'{BUCKET_NAME}/{s3_path}', system_path)
+    fs.download(f"{BUCKET_NAME}/{s3_path}", system_path)
