@@ -1,20 +1,41 @@
 import uuid
 
-from models.model import db
-from sqlalchemy.dialects.postgresql import UUID
+from pynamodb.attributes import NumberAttribute, UnicodeAttribute, UTCDateTimeAttribute
+from pynamodb.indexes import AllProjection, GlobalSecondaryIndex
+from pynamodb.models import Model
+from settings import config
 
 
-class Contest(db.Model):
-    __tablename__ = "contest"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    url = db.Column(db.String(128), unique=True, nullable=False)
-    name = db.Column(db.String(128), nullable=False)
-    image_type = db.Column(db.String(16), nullable=False)
-    start_date = db.Column(db.DateTime, nullable=False)
-    end_date = db.Column(db.DateTime, nullable=False)
-    submissions = db.relationship("Submission",backref='contest', cascade="all, delete-orphan")
-    prize = db.Column(db.Float, nullable=False)
-    script = db.Column(db.String(256), nullable=False)
-    advices = db.Column(db.String(256), nullable=False)
-    admin = db.Column(db.Integer, db.ForeignKey("admin.id"), nullable=False)
-    db.CheckConstraint("end_date > start_date", name="date_constraint")
+class Contest(Model):
+    class Meta:
+        table_name = "contest"
+        host = config.PYNAMO_HOST
+
+    class AdminIndex(GlobalSecondaryIndex):
+        class Meta:
+            read_capacity_units = 1
+            write_capacity_units = 1
+            projection = AllProjection()
+
+        admin = NumberAttribute(hash_key=True, null=False)
+
+    class UrlIndex(GlobalSecondaryIndex):
+        class Meta:
+            read_capacity_units = 1
+            write_capacity_units = 1
+            projection = AllProjection()
+
+        url = UnicodeAttribute(hash_key=True, null=False)
+
+    id = UnicodeAttribute(null=False, default=uuid.uuid4, hash_key=True)
+    url = UnicodeAttribute(null=False)
+    name = UnicodeAttribute(null=False)
+    image_type = UnicodeAttribute(null=False)
+    start_date = UTCDateTimeAttribute(null=False)
+    end_date = UTCDateTimeAttribute(null=False)
+    prize = UnicodeAttribute(null=False)
+    script = UnicodeAttribute(null=False)
+    advices = UnicodeAttribute(null=False)
+    admin = NumberAttribute(null=False)
+    url_index = UrlIndex()
+    admin_index = AdminIndex()

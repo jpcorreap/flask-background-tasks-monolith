@@ -25,6 +25,7 @@ class Config(object):
     EMAIL_SERVER_HOST = os.getenv("EMAIL_SERVER_HOST")
     SENDGRID_USER = os.getenv("SENDGRID_USER")
     SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
+    PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
 
 
 config = Config()

@@ -1,8 +1,10 @@
 from enum import Enum
 import uuid
 
-from models.model import db
-from sqlalchemy.dialects.postgresql import UUID
+from pynamodb.attributes import NumberAttribute, UnicodeAttribute, UTCDateTimeAttribute
+from pynamodb.indexes import AllProjection, GlobalSecondaryIndex
+from pynamodb.models import Model
+from settings import config
 
 
 class SubmissionStatus(str, Enum):
@@ -18,16 +20,26 @@ class SubmissionFileType(str, Enum):
     wma = "wma"
 
 
-class Submission(db.Model):
-    __tablename__ = "submission"
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    observations = db.Column(db.String(512), nullable=False)
-    status = db.Column(db.Enum(SubmissionStatus), nullable=False)
-    contest_id = db.Column(
-        UUID(as_uuid=True),
-        db.ForeignKey("contest.id"),
-        nullable=False
-    )
-    upload_date = db.Column(db.DateTime, nullable=False)
-    file_type = db.Column(db.Enum(SubmissionFileType), nullable=False)
+class Submission(Model):
+    class Meta:
+        table_name = "submission"
+        host = config.PYNAMO_HOST
+
+    class ContestIdIndex(GlobalSecondaryIndex):
+        class Meta:
+            read_capacity_units = 1
+            write_capacity_units = 1
+            projection = AllProjection()
+
+        contest_id = UnicodeAttribute(hash_key=True, null=False)
+
+    id = UnicodeAttribute(null=False, default=uuid.uuid4, hash_key=True)
+    user_id = NumberAttribute(null=False)
+    observations = UnicodeAttribute(null=False)
+    status = UnicodeAttribute(null=False)
+    contest_id = UnicodeAttribute(null=False)
+    upload_date = UTCDateTimeAttribute(null=False)
+    file_type = UnicodeAttribute(null=False)
+    contest_id_index = ContestIdIndex()
+    user_name = UnicodeAttribute(null=False)
+    user_email = UnicodeAttribute(null=False)

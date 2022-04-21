@@ -1,26 +1,10 @@
-import os
-
 from celery import Celery
 from custom_email.email_sender import send_email
 import ffmpeg
-from models.admin import Admin
-from models.contest import Contest
 from models.submission import Submission, SubmissionStatus
-from models.user import User
 from settings import config
-from utils.db import db_session
 
 celery_app = Celery("tasks", broker="redis://redis:6379/0")
-
-
-class SqlAlchemyTask(celery_app.Task):
-    """An abstract Celery Task that ensures that the connection the the
-    database is closed on task completion"""
-
-    abstract = True
-
-    def after_return(self, status, retval, task_id, args, kwargs, einfo):
-        db_session.remove()
 
 
 def convert_to_mp3(filename: str):
@@ -44,14 +28,14 @@ def convert_to_mp3(filename: str):
     )
 
 
-@celery_app.task(name="tasks.process_audio_files", base=SqlAlchemyTask)
+@celery_app.task(name="tasks.process_audio_files")
 def process_audio_files(sub_id: str, file_type: str, user_email: str):
-    submission = db_session.query(Submission).filter_by(id=sub_id).first()
+    submission = Submission.get(sub_id)
     filename = f"{sub_id}.{file_type}"
     try:
         convert_to_mp3(filename)
         submission.status = SubmissionStatus.converted
-        db_session.commit()
+        submission.save()
         send_email(user_email, "Your Submission has been converted successfully")
     except Exception as e:
         print(e)

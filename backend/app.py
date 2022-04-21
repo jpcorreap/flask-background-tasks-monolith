@@ -3,7 +3,9 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
+from models.contest import Contest
 from models.model import db
+from models.submission import Submission
 from schemas.schema import ma
 from settings import config
 from views.contest import (
@@ -25,6 +27,13 @@ app.config.from_object(config)
 db.init_app(app)
 with app.app_context():
     db.create_all()
+    if not Submission.exists():
+        Submission.create_table(
+            wait=True, read_capacity_units=1, write_capacity_units=1
+        )
+    if not Contest.exists():
+        Contest.create_table(wait=True, read_capacity_units=1, write_capacity_units=1)
+
 ma.init_app(app)
 api = Api(app)
 bcrypt = Bcrypt(app)
@@ -55,9 +64,11 @@ api.add_resource(UserDetail, "/api/users/<int:user_id>")
 def serve():
     return app.send_static_file("index.html")
 
+
 @app.route("/contests/<string:x>")
 def serve1(x):
     return app.send_static_file("index.html")
+
 
 @app.route("/contests/<string:x>/submit")
 @app.route("/contests/<string:x>/edit")
