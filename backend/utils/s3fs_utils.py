@@ -1,13 +1,13 @@
 import s3fs
 
-BUCKET_NAME = "test-python-boto3-cloud"
+BUCKET_NAME = "supervoices7"
 
 
 def get_client():
     return s3fs.S3FileSystem(
-        # key="",
-        # secret="",
-        # token=""
+        #  key="",
+        #  secret="",
+        #  token=""
         # Accessing all buckets you have access to with your credentials
         anon=False
     )
@@ -32,7 +32,9 @@ def upload_file(file_in_bytes, folder, final_name):
 
 def get_signed_url(folder, final_name) -> str:
     fs = get_client()
-    signed_url = fs.sign(f"s3://{BUCKET_NAME}/{folder}/{final_name}")
+    signed_url = fs.sign(
+        f"s3://{BUCKET_NAME}/{folder}/{final_name}", client_method="get_object"
+    )
     return signed_url
 
 
