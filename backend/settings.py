@@ -25,7 +25,10 @@ class Config(object):
     SENDGRID_USER = os.getenv("SENDGRID_USER")
     SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
-    BROKER_URL = os.getenv("BROKER_URL", "redis")
+    BROKER_URL = os.getenv("BROKER_URL", "sqs://")
+    CELERY_BROKER_TRANSPORT_OPTIONS = {
+        "predefined_queues": {"supervoices7": {"url": os.getenv("SQS_URL")}}
+    }
 
 
 config = Config()
