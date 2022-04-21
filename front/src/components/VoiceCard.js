@@ -16,16 +16,6 @@ import { FETCH_URL } from "../config";
 
 export default function VoiceCard({ submission }) {
   const { jwt } = useAuth();
-  const { getUserInfo } = useUsersService();
-  const [user, setUser] = useState();
-
-  const handleClick = () => {
-    getUserInfo(
-      submission.user_id,
-      (user) => setUser(user),
-      (error) => {}
-    );
-  };
 
   return (
     <Card>
@@ -71,35 +61,14 @@ export default function VoiceCard({ submission }) {
           <></>
         )}
 
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-          style={{ marginTop: 5 }}
-        >
-          <Grid item xs>
-            <Typography gutterBottom variant="h5" component="span">
-              Submitted by user {submission.user_id}
-            </Typography>
-          </Grid>
-          <Grid item xs={2}>
-            <IconButton aria-label="info" onClick={handleClick}>
-              <HelpIcon />
-            </IconButton>
-          </Grid>
-        </Grid>
-        {user ? (
-          <p style={{ margin: 0, padding: 0, marginBottom: 20 }}>
-            <span
-              style={{ fontWeight: "bolder" }}
-            >{`${user.names} ${user.last_names}`}</span>{" "}
-            <br />
-            {`${user.email}`}
-          </p>
-        ) : (
-          <></>
-        )}
+        <p style={{ margin: 0, padding: 0, marginBottom: 20 }}>
+          Submitted by
+          <span
+            style={{ fontWeight: "bolder" }}
+          >{` ${submission.user_name}`}</span>
+          {" - "}
+          {`${submission.user_email}`}
+        </p>
         <Typography gutterBottom variant="body" component="div">
           Uploaded at {parseStringToDetailedDate(submission.upload_date)}
         </Typography>
