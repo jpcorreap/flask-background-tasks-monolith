@@ -36,7 +36,6 @@ class Config(object):
     SENDGRID_USER = os.getenv("SENDGRID_USER")
     SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
-    BROKER_URL = os.getenv("BROKER_URL", "sqs://")
     ACCESS_KEY, SECRET_ACCESS_KEY = get_access_keys()
     CELERY_BROKER_TRANSPORT_OPTIONS = {
         "region": "us-east-1",
