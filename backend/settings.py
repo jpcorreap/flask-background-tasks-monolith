@@ -38,11 +38,15 @@ class Config(object):
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
     BROKER_URL = os.getenv("BROKER_URL", "sqs://")
     ACCESS_KEY, SECRET_ACCESS_KEY = get_access_keys()
-    SQS_URL = f"sqs://{ACCESS_KEY}:{SECRET_ACCESS_KEY}@"
     CELERY_BROKER_TRANSPORT_OPTIONS = {
         "region": "us-east-1",
-        "predefined_queues": {"supervoices7": {"url": SQS_URL}},
+        "predefined_queues": {
+            "supervoices7": {
+                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo"
+            }
+        },
     }
+    BROKER_URL = f"sqs://{ACCESS_KEY}:{SECRET_ACCESS_KEY}@"
 
 
 config = Config()

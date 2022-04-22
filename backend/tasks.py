@@ -7,7 +7,7 @@ from models.submission import Submission, SubmissionStatus
 from settings import config
 from utils.s3fs_utils import get_signed_url, upload_file
 
-celery_app = Celery("tasks", broker=config.BROKER_URL)
+celery_app = Celery("tasks")
 celery_app.config_from_object(config)
 
 
