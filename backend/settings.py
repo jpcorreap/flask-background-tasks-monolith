@@ -27,7 +27,8 @@ class Config(object):
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
     BROKER_URL = os.getenv("BROKER_URL", "sqs://")
     CELERY_BROKER_TRANSPORT_OPTIONS = {
-        "predefined_queues": {"supervoices7": {"url": os.getenv("SQS_URL")}}
+        "region": "us-east-1",
+        "predefined_queues": {"supervoices7": {"url": os.getenv("SQS_URL")}},
     }
 
 

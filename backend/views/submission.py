@@ -2,7 +2,6 @@ from datetime import datetime
 import json
 import os
 import uuid
-from utils.s3fs_utils import upload_file
 
 from constants.extensions import MAPPER_AUDIO_FILE
 from flask import Response, request
@@ -15,6 +14,7 @@ from models.user import User
 from settings import config
 from tasks import celery_app
 from utils.extensions import allowed_file
+from utils.s3fs_utils import save_file
 from werkzeug.utils import secure_filename
 
 
@@ -54,22 +54,19 @@ class ResourceSubmission(Resource):
 
             new_submission.save()
             db.session.commit()
-            # Esto era de los modelos A, B y C
-            # file.save(os.path.join(config.UPLOAD_FOLDER, final_name))
-            # file.close()
 
-            # Cambio al modelo D
-            successfully_uploaded = upload_file(file, config.PROCESSING_FOLDER_PATH, final_name)
+            successfully_uploaded = save_file(
+                file, config.PROCESSING_FOLDER_PATH, final_name
+            )
 
             if successfully_uploaded:
-                # TODO modificar esta logica para enviar a SQS en lugar de Celery
                 celery_app.send_task(
-                    "tasks.process_audio_files", 
+                    "tasks.process_audio_files",
                     kwargs={
                         "sub_id": file_id,
                         "file_type": file_type,
-                        "user_email": user.email
-                    }
+                        "user_email": user.email,
+                    },
                 )
 
             return json.loads(new_submission.to_json())

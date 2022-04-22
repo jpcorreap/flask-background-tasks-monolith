@@ -30,6 +30,18 @@ def upload_file(file_in_bytes, folder, final_name):
         return False
 
 
+def save_file(file, folder, final_name):
+    try:
+        fs = get_client()
+        with fs.open(f"s3://{BUCKET_NAME}/{folder}/{final_name}", "wb") as s3_obj:
+            file.save(s3_obj)
+        return True
+
+    except Exception as e:
+        print(str(e))
+        return False
+
+
 def get_signed_url(folder, final_name) -> str:
     fs = get_client()
     signed_url = fs.sign(

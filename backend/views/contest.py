@@ -12,6 +12,7 @@ from models.contest import Contest
 from models.submission import Submission
 from settings import config
 from utils.extensions import allowed_file
+from utils.s3fs_utils import save_file
 from utils.validators import validate_url
 
 
@@ -58,8 +59,7 @@ class ResourceContest(Resource):
                         admin=int(get_jwt_identity()),
                     )
                     new_contest.save()
-                    file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
-                    file.close()
+                    save_file(file, config.BANNER_FOLDER_PATH, filename)
                     return json.loads(new_contest.to_json())
                 return ("Not allowed file type", 400)
             return ("Not file was sent", 400)
