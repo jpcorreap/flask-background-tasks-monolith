@@ -45,7 +45,7 @@ class Config(object):
             }
         },
     }
-    BROKER_URL = f"sqs://{ACCESS_KEY}:{SECRET_ACCESS_KEY}@"
+    BROKER_URL = "sqs://"
 
 
 config = Config()
