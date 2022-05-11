@@ -24,7 +24,7 @@ class Submission(Model):
     class Meta:
         table_name = "submission"
         region = config.AWS_REGION
-        aws_access_key_id = config.AWS_SECRET_ACCESS_KEY
+        aws_access_key_id = config.AWS_ACCESS_KEY_ID
         aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY
         aws_session_token = config.AWS_SESSION_TOKEN
 
