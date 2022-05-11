@@ -9,10 +9,10 @@ from settings import config
 class Contest(Model):
     class Meta:
         table_name = "contest"
-        host = config.PYNAMO_HOST
         aws_access_key_id = config.AWS_SECRET_ACCESS_KEY
         aws_secret_access_key = config.AWS_SECRET_ACCESS_KEY
         aws_session_token = config.AWS_SESSION_TOKEN
+        region = config.AWS_REGION
 
     class AdminIndex(GlobalSecondaryIndex):
         class Meta:
