@@ -1,6 +1,7 @@
 import os
 
 from dotenv import load_dotenv
+from kombu.utils.url import safequote
 import requests
 
 load_dotenv()
@@ -38,6 +39,9 @@ class Config(object):
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
     ACCESS_KEY = os.getenv("ACCESS_KEY")
     SECRET_ACCESS_KEY = os.getenv("SECRET_ACCESS_KEY")
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+    AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN", "")
     CELERY_BROKER_TRANSPORT_OPTIONS = {
         "region": "us-east-1",
         "predefined_queues": {
@@ -46,7 +50,9 @@ class Config(object):
             }
         },
     }
-    BROKER_URL = "sqs://"
+    BROKER_URL = (
+        f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
+    )
 
 
 config = Config()

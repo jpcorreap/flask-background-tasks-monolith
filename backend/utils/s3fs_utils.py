@@ -1,15 +1,15 @@
 import s3fs
+from settings import config
 
 BUCKET_NAME = "supervoices7"
 
 
 def get_client():
     return s3fs.S3FileSystem(
-        #  key="",
-        #  secret="",
-        #  token=""
+        key=config.AWS_ACCESS_KEY_ID,
+        secret=config.AWS_SECRET_ACCESS_KEY,
+        token=config.AWS_SESSION_TOKEN
         # Accessing all buckets you have access to with your credentials
-        anon=False
     )
 
 
