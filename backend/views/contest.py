@@ -103,8 +103,7 @@ class ResourceContestDetail(Resource):
                     file_type = file.filename.split(".")[-1]
                     filename = f"{contest.id}.{file_type}"
                     contest.image_type = file_type
-                    file.save(os.path.join(config.BANNER_FOLDER_PATH, filename))
-                    file.close()
+                    save_file(file, config.BANNER_FOLDER_PATH, filename)
             if not validate_url(request.form["url"]):
                 return ("Wrong URL", 400)
             contest.url = request.form["url"]
