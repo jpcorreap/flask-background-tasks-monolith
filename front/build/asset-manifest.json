@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.073c9b0a.css",
+    "main.js": "/static/js/main.c61bec17.js",
+    "static/js/787.71df535f.chunk.js": "/static/js/787.71df535f.chunk.js",
+    "static/media/audio_spectrum_line_animation.gif": "/static/media/audio_spectrum_line_animation.60482760e3b0d21c1635.gif",
+    "static/media/landing.png": "/static/media/landing.c5eca9e725d8d8ebf6c0.png",
+    "index.html": "/index.html",
+    "main.073c9b0a.css.map": "/static/css/main.073c9b0a.css.map",
+    "main.c61bec17.js.map": "/static/js/main.c61bec17.js.map",
+    "787.71df535f.chunk.js.map": "/static/js/787.71df535f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.c61bec17.js"
+  ]
+}
