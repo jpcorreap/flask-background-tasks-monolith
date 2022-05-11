@@ -6,14 +6,14 @@ import requests
 load_dotenv()
 
 
-def get_access_keys():
-    response = requests.get(
-        "http://169.254.169.254/latest/meta-data/iam/security-credentials/LabRole"
-    )
-    response_json = response.json()
-    access_key = response_json.get("AccessKeyId")
-    secret_access_key = response_json.get("SecretAccessKey")
-    return access_key, secret_access_key
+# def get_access_keys():
+#     response = requests.get(
+#         "http://169.254.169.254/latest/meta-data/iam/security-credentials/LabRole"
+#     )
+#     response_json = response.json()
+#     access_key = response_json.get("AccessKeyId")
+#     secret_access_key = response_json.get("SecretAccessKey")
+#     return access_key, secret_access_key
 
 
 class Config(object):
@@ -36,7 +36,8 @@ class Config(object):
     SENDGRID_USER = os.getenv("SENDGRID_USER")
     SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
-    ACCESS_KEY, SECRET_ACCESS_KEY = get_access_keys()
+    ACCESS_KEY = os.getenv("ACCESS_KEY")
+    SECRET_ACCESS_KEY = os.getenv("SECRET_ACCESS_KEY")
     CELERY_BROKER_TRANSPORT_OPTIONS = {
         "region": "us-east-1",
         "predefined_queues": {
