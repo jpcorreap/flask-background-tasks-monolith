@@ -134,7 +134,7 @@ venv
 # Pyre type checker
 .pyre/
 front/yarn.lock
-front/node_modules/*
+front/node_modules/
 
 #Media folders
 converter/
