@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { CLOUDFRONT_URL } from "../config";
 import useFetchRequest from "../hooks/useFetchRequest";
 
 export function useContestService() {
@@ -20,8 +21,8 @@ export function useContestService() {
   );
 
   const getBanner = useCallback(
-    (contestUrl, onSuccess, onFailure) => {
-      return getMedia("/contests/banner/" + contestUrl)
+    (imageId, fileType, onSuccess, onFailure) => {
+      return getMedia(CLOUDFRONT_URL, `img/banner/${imageId}.${fileType}`)
         .then((res) => {
           console.info(res);
           onSuccess(res);
@@ -31,7 +32,7 @@ export function useContestService() {
           onFailure(error);
         });
     },
-    [get]
+    [getMedia]
   );
 
   const createContest = useCallback(

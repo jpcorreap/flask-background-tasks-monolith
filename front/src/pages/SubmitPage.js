@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SubmissionForm from "../components/SubmissionForm";
 import VoiceCard from "../components/VoiceCard";
+import { CLOUDFRONT_URL } from "../config";
 import { useContestService } from "../services/useContestService";
 import { parseStringToDetailedDate } from "../utils/dateUtils";
 
@@ -13,7 +14,7 @@ export default function SubmitPage() {
   const [isContestDetailLoading, setIsContestDetailLoading] = useState(true);
   const [contest, setContest] = useState();
   const [isBannerLoading, setIsBannerLoading] = useState(true);
-  const [banner, setBanner] = useState();
+  const [bannerUrl, setBannerUrl] = useState("");
   const [error, setError] = useState();
 
   useEffect(() => {
@@ -22,19 +23,12 @@ export default function SubmitPage() {
       (c) => {
         setContest(c);
         setIsContestDetailLoading(false);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    getBanner(
-      contestId,
-      (bannerBlob) => {
-        setBanner(URL.createObjectURL(bannerBlob));
+        setBannerUrl(`${CLOUDFRONT_URL}img/banner/${c.id}.${c.image_type}`);
         setIsBannerLoading(false);
       },
       (error) => {
         setError(error);
+        setIsBannerLoading(false);
       }
     );
   }, []);
@@ -58,7 +52,7 @@ export default function SubmitPage() {
           minHeight: "100vh",
         }}
       >
-        <img width={"100%"} src={banner} alt={`Contest ${contestId}`} />
+        <img width={"100%"} src={bannerUrl} alt={`Contest ${contestId}`} />
         <p
           style={{
             textAlign: "center",

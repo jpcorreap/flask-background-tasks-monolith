@@ -3,6 +3,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import VoiceCard from "../components/VoiceCard";
+import { CLOUDFRONT_URL } from "../config";
 import { useContestService } from "../services/useContestService";
 import { parseStringToDetailedDate } from "../utils/dateUtils";
 
@@ -14,7 +15,7 @@ export default function ContestPage() {
   const [contest, setContest] = useState();
 
   const [isBannerLoading, setIsBannerLoading] = useState(true);
-  const [banner, setBanner] = useState();
+  const [bannerUrl, setBannerUrl] = useState();
 
   const [error, setError] = useState();
 
@@ -24,19 +25,12 @@ export default function ContestPage() {
       (c) => {
         setContest(c);
         setIsContestDetailLoading(false);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    getBanner(
-      contestId,
-      (bannerBlob) => {
-        setBanner(URL.createObjectURL(bannerBlob));
+        setBannerUrl(`${CLOUDFRONT_URL}img/banner/${c.id}.${c.image_type}`);
         setIsBannerLoading(false);
       },
       (error) => {
         setError(error);
+        setIsBannerLoading(false);
       }
     );
   }, []);
@@ -60,7 +54,7 @@ export default function ContestPage() {
           minHeight: "100vh",
         }}
       >
-        <img width={"100%"} src={banner} alt={`Contest ${contestId}`} />
+        <img width={"100%"} src={bannerUrl} alt={`Contest ${contestId}`} />
         <p
           style={{
             textAlign: "center",
