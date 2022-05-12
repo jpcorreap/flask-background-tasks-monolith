@@ -56,6 +56,9 @@ class Config(object):
     BROKER_URL = (
         f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
     )
+    CELERY_BROKER_URL = (
+        f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
+    )
 
 
 config = Config()
