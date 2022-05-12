@@ -47,7 +47,9 @@ class Config(object):
         "region": "us-east-1",
         "predefined_queues": {
             "supervoices7": {
-                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo"
+                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo",
+                "access_key_id": AWS_ACCESS_KEY_ID,
+                "secret_access_key": AWS_SECRET_ACCESS_KEY,
             }
         },
     }
