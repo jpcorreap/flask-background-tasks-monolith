@@ -12,7 +12,7 @@ import HelpIcon from "@mui/icons-material/Help";
 import { useUsersService } from "../services/useUsersService";
 import { useState } from "react";
 
-import { FETCH_URL } from "../config";
+import { CLOUDFRONT_URL, FETCH_URL } from "../config";
 
 export default function VoiceCard({ submission }) {
   const { jwt } = useAuth();
@@ -32,20 +32,20 @@ export default function VoiceCard({ submission }) {
           <p>Raw:</p>
           <audio
             controls
-            src={`${FETCH_URL}/submissions/raw/${submission.id}`}
+            src={`${CLOUDFRONT_URL}converter/in_process/${submission.id}.${submission.file_type}`}
           ></audio>
 
           <p>Converted:</p>
           <audio
             controls
-            src={`${FETCH_URL}/submissions/${submission.id}`}
+            src={`${CLOUDFRONT_URL}converter/processed/${submission.id}.mp3`}
             type="audio/mpeg"
           ></audio>
         </>
       ) : (
         <audio
           controls
-          src={`${FETCH_URL}/submissions/${submission.id}`}
+          src={`${CLOUDFRONT_URL}converter/processed/${submission.id}.mp3`}
           type="audio/mpeg"
         ></audio>
       )}
@@ -65,9 +65,8 @@ export default function VoiceCard({ submission }) {
           Submitted by
           <span
             style={{ fontWeight: "bolder" }}
-          >{` ${submission.user_name}`}</span>
-          {" - "}
-          {`${submission.user_email}`}
+          >{` ${submission.user_name}`}</span>{" "}
+          {`(${submission.user_email})`}
         </p>
         <Typography gutterBottom variant="body" component="div">
           Uploaded at {parseStringToDetailedDate(submission.upload_date)}

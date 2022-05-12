@@ -30,9 +30,9 @@ export default function useFetchRequest() {
         );
       },
 
-      async getMedia(path) {
+      async getMedia(url, path) {
         const headers = await _getHeaders();
-        return fetch(FETCH_URL + path, { headers, method: "GET" }).then((res) =>
+        return fetch(url + path, { headers, method: "GET" }).then((res) =>
           res.blob()
         );
       },
