@@ -1,5 +1,7 @@
 build:
   docker:
     web: Dockerfile
+    worker: Dockerfile
 run:
   web: gunicorn wsgi:app
+  worker: poetry run celery -A tasks worker -l info -E
