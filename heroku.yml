@@ -9,5 +9,5 @@ build:
     web: Dockerfile
     worker: Dockerfile
 run:
-  web: gunicorn wsgi:app
+  web: gunicorn wsgi:app --timeout 20 --preload
   worker: poetry run celery -A tasks worker -l info -E
