@@ -53,8 +53,28 @@ class Config(object):
             }
         },
     }
+    BROKER_TRANSPORT_OPTIONS = {
+        "region": "us-east-1",
+        "predefined_queues": {
+            "supervoices7": {
+                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo",
+                "access_key_id": AWS_ACCESS_KEY_ID,
+                "secret_access_key": AWS_SECRET_ACCESS_KEY,
+            },
+            "celery": {
+                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/celery",
+                "access_key_id": AWS_ACCESS_KEY_ID,
+                "secret_access_key": AWS_SECRET_ACCESS_KEY,
+            },
+        },
+    }
+    BROKER_TRANSPORT = 'sqs'
+    CELERY_BROKER_TRANSPORT = 'sqs'
     BROKER_URL = (
-        f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
+        f"sqs://"
+    )
+    CELERY_BROKER_URL = (
+        f"sqs://"
     )
 
 
