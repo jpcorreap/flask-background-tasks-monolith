@@ -38,44 +38,16 @@ class Config(object):
     SENDGRID_SECRET = os.getenv("SENDGRID_SECRET")
     PYNAMO_HOST = os.getenv("PYNAMO_HOST", "http://localhost:8000")
     ACCESS_KEY = os.getenv("ACCESS_KEY")
-    AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
     SECRET_ACCESS_KEY = os.getenv("SECRET_ACCESS_KEY")
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
     AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN", "")
-    CELERY_BROKER_TRANSPORT_OPTIONS = {
-        "region": "us-east-1",
-        "predefined_queues": {
-            "supervoices7": {
-                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo",
-                "access_key_id": AWS_ACCESS_KEY_ID,
-                "secret_access_key": AWS_SECRET_ACCESS_KEY,
-            }
-        },
-    }
-    BROKER_TRANSPORT_OPTIONS = {
-        "region": "us-east-1",
-        "predefined_queues": {
-            "supervoices7": {
-                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/supervoices7.fifo",
-                "access_key_id": AWS_ACCESS_KEY_ID,
-                "secret_access_key": AWS_SECRET_ACCESS_KEY,
-            },
-            "celery": {
-                "url": "https://sqs.us-east-1.amazonaws.com/833464877364/celery",
-                "access_key_id": AWS_ACCESS_KEY_ID,
-                "secret_access_key": AWS_SECRET_ACCESS_KEY,
-            },
-        },
-    }
-    BROKER_TRANSPORT = 'sqs'
-    CELERY_BROKER_TRANSPORT = 'sqs'
-    BROKER_URL = (
-        f"sqs://"
-    )
-    CELERY_BROKER_URL = (
-        f"sqs://"
-    )
+    BROKER_URL = 'redis://'
+    CELERY_RESULT_BACKEND = 'redis://'
+    MEMCACHIER_USERNAME = os.getenv("MEMCACHIER_USERNAME")
+    MEMCACHIER_PASSWORD = os.getenv("MEMCACHIER_PASSWORD")
+    MEMCACHIER_SERVERS = os.getenv("MEMCACHIER_SERVERS")
+    
 
 
 config = Config()

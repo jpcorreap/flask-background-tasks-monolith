@@ -1,3 +1,9 @@
+setup:
+  addons:
+    - plan: heroku-redis
+      as: redis
+    - plan: memcachier
+      as: memcache
 build:
   docker:
     web: Dockerfile
