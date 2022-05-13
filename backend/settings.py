@@ -42,6 +42,7 @@ class Config(object):
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
     AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN", "")
+    AWS_REGION = os.getenv("AWS_REGION", "")
     BROKER_URL = 'redis://'
     CELERY_RESULT_BACKEND = 'redis://'
     MEMCACHIER_USERNAME = os.getenv("MEMCACHIER_USERNAME")
