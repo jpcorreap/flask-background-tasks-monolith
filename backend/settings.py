@@ -68,11 +68,13 @@ class Config(object):
             },
         },
     }
+    BROKER_TRANSPORT = 'sqs'
+    CELERY_BROKER_TRANSPORT = 'sqs'
     BROKER_URL = (
-        f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
+        f"sqs://"
     )
     CELERY_BROKER_URL = (
-        f"sqs://{safequote(AWS_ACCESS_KEY_ID)}:{safequote(AWS_SECRET_ACCESS_KEY)}@"
+        f"sqs://"
     )
 
 
