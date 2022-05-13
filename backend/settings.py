@@ -1,8 +1,6 @@
 import os
 
 from dotenv import load_dotenv
-from kombu.utils.url import safequote
-import requests
 
 load_dotenv()
 
@@ -43,12 +41,12 @@ class Config(object):
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
     AWS_SESSION_TOKEN = os.getenv("AWS_SESSION_TOKEN", "")
     AWS_REGION = os.getenv("AWS_REGION", "")
-    BROKER_URL = 'redis://'
-    CELERY_RESULT_BACKEND = 'redis://'
     MEMCACHIER_USERNAME = os.getenv("MEMCACHIER_USERNAME")
     MEMCACHIER_PASSWORD = os.getenv("MEMCACHIER_PASSWORD")
     MEMCACHIER_SERVERS = os.getenv("MEMCACHIER_SERVERS")
-    
+    REDIS_URL = os.getenv("REDIS_URL", "")
+    BROKER_URL = REDIS_URL
+    CELERY_RESULT_BACKEND = REDIS_URL
 
 
 config = Config()
