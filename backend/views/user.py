@@ -8,6 +8,7 @@ from models.admin import Admin
 from models.model import db
 from models.user import User
 from schemas.user import user_schema
+from utils.cache import mc
 
 
 class SignIn(Resource):
@@ -19,11 +20,16 @@ class SignIn(Resource):
             if check_password_hash(
                 admin.password, request.json["password"].encode("utf-8")
             ):
-                access_token = create_access_token(
-                    identity=str(user.id),
-                    expires_delta=timedelta(hours=2),
-                    additional_claims={"email": request.json["email"]},
-                )
+                access_token = mc.get(str(user.id))
+
+                if not access_token:
+                    access_token = create_access_token(
+                        identity=str(user.id),
+                        expires_delta=timedelta(hours=24),
+                        additional_claims={"email": request.json["email"]},
+                    )
+                    mc.set(str(user.id), access_token)
+
                 ans = {"access_token": access_token}, 200
         return ans
 
