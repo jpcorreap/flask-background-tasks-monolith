@@ -40,6 +40,6 @@ def process_audio_files(sub_id: str, file_type: str, user_email: str):
         convert_to_mp3(filename)
         submission.status = SubmissionStatus.converted
         submission.save()
-        # send_email(user_email, "Your Submission has been converted successfully")
+        send_email(user_email, "Your Submission has been converted successfully")
     except Exception as e:
         print(e)
