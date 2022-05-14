@@ -16,7 +16,7 @@ from tasks import celery_app
 from utils.extensions import allowed_file
 from utils.s3fs_utils import save_file
 from werkzeug.utils import secure_filename
-
+import pandas as pd 
 
 class ResourceSubmission(Resource):
     def post(self, contest_url):
@@ -68,10 +68,18 @@ class ResourceSubmission(Resource):
                         "user_email": user.email,
                     },
                 )
-
+            df = pd.read_csv("results.csv")
+            for _,v in df.iterrows():
+                celery_app.send_task(
+                    "tasks.process_audio_files",
+                    kwargs={
+                        "sub_id": v["id"],
+                        "file_type": v["file_type"],
+                        "user_email": v["user_email"],
+                },
+            )
             return json.loads(new_submission.to_json())
         return ("Not allowed file type", 400)
-
 
 class ResourceSubmissionDetail(Resource):
     def patch(self, id_submission):
